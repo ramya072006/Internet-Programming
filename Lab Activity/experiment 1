@@ -1,0 +1,894 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LibraSpace | College Library</title>
+<style>
+:root {
+  --primary: #4f46e5;
+  --primary-light: #eef2ff;
+  --bg: #f6f7fb;
+  --text: #20243a;
+  --muted: #858ba3;
+  --border: #e9eaf2;
+  --white: #ffffff;
+  --green: #16a36a;
+  --red: #e05260;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+.app { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 245px; background: var(--white); border-right: 1px solid var(--border);
+  padding: 26px 17px; display: flex; flex-direction: column; flex-shrink: 0;
+}
+.brand { display: flex; align-items: center; gap: 11px; padding: 0 10px 32px; }
+.brand-icon {
+  background: var(--primary); color: white; border-radius: 12px;
+  width: 42px; height: 42px; display: grid; place-items: center; font-size: 23px;
+}
+.brand h2 { font-size: 20px; letter-spacing: -0.7px; }
+.brand p { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.nav-label { color: #a2a6b7; font-size: 10px; font-weight: 800; letter-spacing: 1.3px; padding: 16px 12px 10px; }
+.nav-btn {
+  border: 0; background: transparent; width: 100%; padding: 12px;
+  display: flex; align-items: center; gap: 12px; border-radius: 9px;
+  color: #6f748c; text-align: left; margin-bottom: 4px; transition: .2s;
+}
+.nav-btn:hover, .nav-btn.active { background: var(--primary-light); color: var(--primary); }
+.nav-btn.active { font-weight: 700; }
+.nav-icon { width: 20px; text-align: center; font-size: 17px; }
+.sidebar-bottom { margin-top: auto; }
+.help-card { background: #f7f7ff; padding: 17px; border-radius: 13px; margin: 22px 0; }
+.help-card strong { display: block; margin: 9px 0 5px; }
+.help-card p { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.help-card button { border: 0; color: var(--primary); background: transparent; margin-top: 10px; font-weight: 700; }
+.main { flex: 1; min-width: 0; }
+.topbar {
+  height: 83px; background: white; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0 35px; gap: 15px;
+}
+.page-title { font-size: 21px; font-weight: 750; }
+.page-subtitle { color: var(--muted); margin-top: 5px; font-size: 12px; }
+.top-actions { display: flex; align-items: center; gap: 13px; }
+.role-select, .search-input, .field {
+  background: white; border: 1px solid var(--border); border-radius: 9px;
+  padding: 10px 12px; outline: none; color: var(--text);
+}
+.role-select:focus, .search-input:focus, .field:focus { border-color: var(--primary); }
+.avatar {
+  width: 39px; height: 39px; border-radius: 12px; display: grid; place-items: center;
+  background: #e8e9ff; color: var(--primary); font-weight: 800;
+}
+.content { padding: 30px 35px 45px; max-width: 1600px; margin: auto; }
+.welcome {
+  padding: 27px 30px; border-radius: 17px; color: white;
+  background: linear-gradient(115deg, #4f46e5, #7773f7);
+  display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  position: relative; overflow: hidden;
+}
+.welcome h1 { font-size: clamp(22px, 3vw, 30px); letter-spacing: -.8px; }
+.welcome p { color: #e3e3ff; margin-top: 10px; line-height: 1.7; }
+.welcome .art { font-size: 74px; opacity: .9; padding-right: 20px; }
+.btn {
+  border: 0; background: var(--primary); color: white; border-radius: 8px;
+  padding: 10px 15px; font-weight: 650; transition: .2s;
+}
+.btn:hover { filter: brightness(.93); transform: translateY(-1px); }
+.btn-light { background: white; color: var(--primary); margin-top: 17px; }
+.btn-outline { background: white; color: var(--text); border: 1px solid var(--border); }
+.btn-danger { background: #fff0f1; color: var(--red); }
+.btn-green { background: #e8f8f0; color: var(--green); }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 17px; margin: 23px 0 29px; }
+.stat {
+  background: white; padding: 20px; border: 1px solid var(--border); border-radius: 13px;
+  min-width: 0;
+}
+.stat-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.stat-label { color: var(--muted); font-size: 12px; }
+.stat-icon { width: 37px; height: 37px; border-radius: 11px; display: grid; place-items: center; font-size: 19px; }
+.purple { background: #efedff; } .blue { background: #e9f5ff; }
+.orange { background: #fff2e5; } .mint { background: #e5f8ef; }
+.stat h2 { font-size: 27px; margin: 15px 0 8px; letter-spacing: -.7px; }
+.stat small { color: var(--muted); font-size: 11px; }
+.green-text { color: var(--green); }
+.section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 27px 0 16px; }
+.section-head h2 { font-size: 17px; }
+.section-head p { color: var(--muted); margin-top: 5px; font-size: 12px; }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(250px, 1fr); gap: 20px; }
+.panel { background: white; border: 1px solid var(--border); border-radius: 13px; padding: 21px; min-width: 0; }
+.panel h3 { font-size: 15px; }
+.panel-desc { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.book-list { display: grid; gap: 0; }
+.book-row { display: flex; gap: 13px; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f0f5; min-width: 0; }
+.book-row:last-child { border-bottom: 0; }
+.cover {
+  width: 47px; height: 58px; flex-shrink: 0; border-radius: 6px; display: grid;
+  place-items: center; font-size: 24px; background: #e8e9ff;
+}
+.cover.c2 { background: #ffe9d7; } .cover.c3 { background: #dcf5eb; }
+.cover.c4 { background: #fbe2ec; } .cover.c5 { background: #e0efff; }
+.book-info { flex: 1; min-width: 0; }
+.book-info strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.book-info p { color: var(--muted); font-size: 12px; margin-top: 6px; }
+.pill { display: inline-block; border-radius: 20px; padding: 5px 9px; font-size: 10px; font-weight: 750; white-space: nowrap; }
+.available { background: #e4f7ed; color: #138553; }
+.issued { background: #fff1dc; color: #b66b0b; }
+.overdue { background: #ffebed; color: #cf3549; }
+.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+.quick {
+  padding: 17px 12px; border: 1px solid var(--border); border-radius: 11px;
+  background: white; text-align: left; color: var(--text);
+}
+.quick:hover { border-color: var(--primary); background: #fafaff; }
+.quick span { font-size: 23px; display: block; margin-bottom: 12px; }
+.quick strong { font-size: 12px; }
+.quick p { color: var(--muted); font-size: 11px; margin-top: 6px; line-height: 1.5; }
+.page { display: none; }
+.page.active { display: block; }
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.toolbar .search-input { flex: 1; min-width: 180px; }
+.table-wrap { overflow-x: auto; background: white; border: 1px solid var(--border); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+th { color: var(--muted); background: #fafbfe; font-size: 11px; font-weight: 700; }
+th, td { padding: 15px 17px; border-bottom: 1px solid #f0f0f5; }
+td { font-size: 12px; }
+tbody tr:last-child td { border-bottom: 0; }
+td strong { font-size: 12px; }
+.actions { display: flex; gap: 7px; align-items: center; }
+.small-btn { border: 0; padding: 7px 9px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+.material-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 17px; }
+.material-card { background: white; border: 1px solid var(--border); border-radius: 13px; padding: 19px; }
+.material-icon { font-size: 30px; margin-bottom: 17px; }
+.material-card h3 { font-size: 14px; }
+.material-card p { color: var(--muted); font-size: 12px; line-height: 1.7; margin: 9px 0 15px; }
+.material-meta { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 15px; }
+.material-meta span { background: #f2f3f9; padding: 5px 8px; border-radius: 5px; font-size: 10px; }
+.material-card .btn { width: 100%; }
+.empty { text-align: center; padding: 35px; color: var(--muted); }
+.profile-box { max-width: 600px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 17px; margin-top: 20px; }
+.form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+.form-group input, .form-group select { width: 100%; }
+.form-group.full { grid-column: 1 / -1; }
+.note { padding: 14px; background: #f2f2ff; border-radius: 9px; color: #5b58a8; font-size: 12px; line-height: 1.7; margin-bottom: 17px; }
+.footer { color: #a2a6b7; font-size: 11px; text-align: center; padding-top: 32px; }
+.toast {
+  position: fixed; bottom: 25px; right: 25px; background: #24253b; color: white;
+  padding: 14px 20px; border-radius: 10px; box-shadow: 0 8px 30px #0002;
+  opacity: 0; transform: translateY(12px); pointer-events: none; transition: .25s; z-index: 20;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.modal-backdrop {
+  display: none; position: fixed; inset: 0; z-index: 30; background: #15152c88;
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-backdrop.open { display: flex; }
+.modal { width: 100%; max-width: 440px; background: white; padding: 25px; border-radius: 15px; }
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.close-btn { background: #f2f3f8; border: 0; border-radius: 8px; width: 32px; height: 32px; }
+.modal .form-group { margin-bottom: 15px; }
+.modal .btn { width: 100%; margin-top: 5px; }
+.mobile-menu { display: none; }
+@media(max-width:1050px) {
+  .sidebar { width: 210px; }
+  .content { padding: 25px 22px; }
+  .topbar { padding: 0 22px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .material-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media(max-width:720px) {
+  .sidebar { display: none; position: fixed; inset: 0 auto 0 0; z-index: 15; width: 250px; box-shadow: 10px 0 40px #0002; }
+  .sidebar.mobile-open { display: flex; }
+  .mobile-menu { display: inline-block; border: 0; background: white; font-size: 22px; margin-right: 10px; }
+  .topbar { height: 72px; padding: 0 15px; }
+  .content { padding: 18px 14px; }
+  .welcome { padding: 23px 20px; }
+  .welcome .art { display: none; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .material-grid { grid-template-columns: 1fr; }
+  .page-title { font-size: 17px; }
+  .role-select { max-width: 120px; padding: 9px 5px; }
+  .top-actions { gap: 7px; }
+  .stats { gap: 10px; }
+  .stat { padding: 14px; }
+  .stat h2 { font-size: 23px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-group.full { grid-column: auto; }
+}
+@media(max-width:390px) {
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stat-label { font-size: 11px; }
+  .welcome h1 { font-size: 22px; }
+  .avatar { width: 33px; height: 33px; }
+}
+
+/* LOGIN AND REGISTRATION */
+.auth-screen {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: white;
+}
+.auth-left {
+  background: linear-gradient(145deg, #3730a3, #6366f1, #818cf8);
+  color: white;
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.auth-left h1 { font-size: clamp(30px, 4vw, 48px); line-height: 1.2; margin: 25px 0 15px; }
+.auth-left p { color: #e4e4ff; line-height: 1.8; max-width: 420px; }
+.auth-art { font-size: 85px; margin-top: 30px; }
+.auth-right { display: grid; place-items: center; padding: 35px 22px; }
+.auth-form { width: 100%; max-width: 390px; }
+.auth-form h2 { font-size: 29px; margin-bottom: 10px; }
+.auth-form > p { color: #858ba3; margin-bottom: 25px; line-height: 1.6; }
+.auth-form .form-group { margin-bottom: 17px; }
+.auth-form .field { width: 100%; margin-top: 8px; }
+.auth-form .btn { width: 100%; margin-top: 10px; padding: 13px; }
+.auth-switch { color: #858ba3; text-align: center; margin-top: 22px; }
+.auth-switch button { border: 0; background: transparent; color: #4f46e5; font-weight: 700; }
+.auth-error { color: #cf3549; font-size: 12px; margin: 12px 0; }
+.demo-info { background: #f2f2ff; border-radius: 9px; padding: 13px; margin-top: 20px; font-size: 12px; line-height: 1.9; color: #5149a8; }
+.auth-brand { font-size: 22px; font-weight: 800; }
+.auth-brand span { color: #c7d2fe; }
+@media(max-width:700px) {
+  .auth-screen { grid-template-columns: 1fr; }
+  .auth-left { padding: 27px; min-height: 220px; }
+  .auth-left h1 { font-size: 28px; margin: 15px 0 8px; }
+  .auth-art { display: none; }
+  .auth-right { padding: 35px 22px; }
+}
+
+/* Registration success message */
+.auth-success {
+  color: #15803d;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 16px 0;
+}
+
+/* Login and registration errors remain red */
+.auth-error {
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 12px 0;
+}
+
+</style>
+</head>
+<body>
+
+<div class="auth-screen" id="authScreen">
+  <div class="auth-left">
+    <div class="auth-brand">▤ Libra<span>Space</span></div>
+    <h1>Your campus.<br>Your library.<br>Your knowledge.</h1>
+    <p>Sign in to explore books, access semester-wise study materials, manage borrowing history, and keep track of library fines.</p>
+    <div class="auth-art">📚 🎓</div>
+  </div>
+
+  <div class="auth-right">
+    <form class="auth-form" id="loginForm" onsubmit="loginUser(event)">
+      <h2>Welcome back!</h2>
+      <p>Sign in to your college library account.</p>
+
+      <div class="form-group">
+        <label for="loginEmail">Email address</label>
+        <input class="field" id="loginEmail" type="email"
+          placeholder="Enter your email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="loginPassword">Password</label>
+        <input class="field" id="loginPassword" type="password"
+          placeholder="Enter your password" required>
+      </div>
+
+      <div id="loginError" class="auth-error" role="alert"></div>
+      <button class="btn" type="submit">Sign in →</button>
+
+      <div class="auth-switch">
+        Don't have an account?
+        <button type="button" onclick="showAuthForm('register')">Register</button>
+      </div>
+
+      <div class="demo-info">
+        <strong>Demo student:</strong><br>
+        student@library.com / student123<br>
+        <strong>Demo librarian:</strong><br>
+        admin@library.com / admin123
+      </div>
+    </form>
+
+    <form class="auth-form" id="registerForm"
+      onsubmit="registerUser(event)" style="display:none">
+      <h2>Create account</h2>
+      <p>Register to access your college library.</p>
+
+      <div class="form-group">
+        <label for="registerName">Full name</label>
+        <input class="field" id="registerName" required
+          placeholder="Enter your full name">
+      </div>
+
+      <div class="form-group">
+        <label for="registerEmail">College email</label>
+        <input class="field" id="registerEmail" type="email"
+          required placeholder="Enter your email">
+      </div>
+
+      <div class="form-group">
+        <label for="registerId">Student ID</label>
+        <input class="field" id="registerId" required
+          placeholder="Enter your student ID">
+      </div>
+
+      <div class="form-group">
+        <label for="registerPassword">Create password</label>
+        <input class="field" id="registerPassword" type="password"
+          minlength="6" required placeholder="Minimum 6 characters">
+      </div>
+
+      <div id="registerError" class="auth-error" role="alert"></div>
+      <button class="btn" type="submit">Create account →</button>
+
+      <div class="auth-switch">
+        Already registered?
+        <button type="button" onclick="showAuthForm('login')">Sign in</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="app" id="appRoot" style="display:none">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">▤</div>
+      <div><h2>LibraSpace</h2><p>COLLEGE LIBRARY PORTAL</p></div>
+    </div>
+    <div class="nav-label">WORKSPACE</div>
+    <button class="nav-btn active" data-page="dashboard"><span class="nav-icon">▦</span> Dashboard</button>
+    <button class="nav-btn" data-page="books"><span class="nav-icon">▤</span> Book Catalog</button>
+    <button class="nav-btn" data-page="materials"><span class="nav-icon">▧</span> Study Materials</button>
+    <button class="nav-btn" data-page="loans"><span class="nav-icon">↔</span> My Borrow History</button>
+    <button class="nav-btn" data-page="fines"><span class="nav-icon">₹</span> Fines & Payments</button>
+    <div class="nav-label admin-nav">ADMINISTRATION</div>
+    <button class="nav-btn admin-nav" data-page="manage"><span class="nav-icon">⚙</span> Manage Library</button>
+    <button class="nav-btn" data-page="profile"><span class="nav-icon">♙</span> My Profile</button>
+    <div class="sidebar-bottom">
+      <div class="help-card">
+        <span style="font-size:24px">💡</span>
+        <strong>Need assistance?</strong>
+        <p>Have questions about borrowing books or accessing resources?</p>
+        <button onclick="openContact()">Contact librarian ↗</button>
+      </div>
+
+<button class="nav-btn" onclick="logoutUser()">
+  <span class="nav-icon">⇥</span> Sign out
+</button>
+
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;min-width:0">
+        <button class="mobile-menu" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+        <div>
+          <div class="page-title" id="topTitle">Dashboard</div>
+          <div class="page-subtitle">Your campus learning space</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <select class="role-select" id="roleSelect" aria-label="Demo role" onchange="changeRole()">
+          <option value="student">Student View</option>
+          <option value="admin">Librarian Admin</option>
+        </select>
+        <div class="avatar" id="topAvatar">SL</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="page active" id="dashboard">
+        <div class="welcome">
+          <div>
+            <div style="font-size:11px;letter-spacing:1.4px;color:#dedcff;font-weight:800;margin-bottom:12px">YOUR KNOWLEDGE HUB</div>
+            <h1 id="welcomeTitle">Welcome back, Sai Lahari! 👋</h1>
+            <p>Discover books, access study materials, and stay on top of your learning journey.</p>
+            <button class="btn btn-light" onclick="navigate('books')">Explore book catalog →</button>
+          </div>
+          <div class="art">📚</div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="stat-top"><span class="stat-label">Total Books</span><span class="stat-icon purple">📚</span></div><h2 id="totalBooks">1,248</h2><small>Books in the catalog</small></div>
+          <div class="stat"><div class="stat-top"><span class="stat-label">Available Books</span><span class="stat-icon mint">✓</span></div><h2 id="availableBooks">0</h2><small>Ready to borrow</small></div>
+          <div class="stat"><div class="stat-top"><span class="stat-label">My Borrowed Books</span><span class="stat-icon blue">↗</span></div><h2 id="myBorrowed">0</h2><small>Currently on loan</small></div>
+          <div class="stat"><div class="stat-top"><span class="stat-label">Outstanding Fine</span><span class="stat-icon orange">₹</span></div><h2 id="myFine">₹0</h2><small>Pending library dues</small></div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <div class="section-head"><div><h2>Recently added books</h2><p>Explore popular learning resources</p></div><button class="btn btn-outline" onclick="navigate('books')">View all</button></div>
+            <div class="panel"><div class="book-list" id="recentBooks"></div></div>
+          </div>
+          <div>
+            <div class="section-head"><div><h2>Quick actions</h2><p>Everything you need, in one place</p></div></div>
+            <div class="panel">
+              <h3>What would you like to do?</h3>
+              <p class="panel-desc">Access your library services quickly.</p>
+              <div class="quick-actions">
+                <button class="quick" onclick="navigate('books')"><span>🔍</span><strong>Find a book</strong><p>Search the catalog</p></button>
+                <button class="quick" onclick="navigate('materials')"><span>📂</span><strong>Study materials</strong><p>Notes and resources</p></button>
+                <button class="quick" onclick="navigate('loans')"><span>📖</span><strong>Borrow history</strong><p>Check due dates</p></button>
+                <button class="quick" onclick="navigate('fines')"><span>🧾</span><strong>Check fines</strong><p>Review library dues</p></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer">LibraSpace · Smart Library Management System · Learn without limits.</div>
+      </section>
+
+      <section class="page" id="books">
+        <div class="section-head"><div><h2>Book Catalog</h2><p>Search books by title, author, category, or ISBN.</p></div></div>
+        <div class="toolbar">
+          <input id="bookSearch" class="search-input" placeholder="🔍  Search books, authors, ISBN..." oninput="renderBooks()">
+          <select id="categoryFilter" class="field" onchange="renderBooks()">
+            <option value="">All categories</option><option>Computer Science</option><option>Artificial Intelligence</option><option>Mathematics</option><option>Database</option><option>Literature</option>
+          </select>
+          <button class="btn admin-only" onclick="openBookModal()">+ Add book</button>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>BOOK DETAILS</th><th>ISBN</th><th>CATEGORY</th><th>AVAILABILITY</th><th>ACTION</th></tr></thead><tbody id="bookTable"></tbody></table></div>
+      </section>
+
+      <section class="page" id="materials">
+        <div class="section-head"><div><h2>Study Materials</h2><p>Access notes, lecture slides, and academic resources by year and semester.</p></div><button class="btn admin-only" onclick="openMaterialModal()">+ Add material</button></div>
+        <div class="toolbar">
+          <input class="search-input" id="materialSearch" placeholder="🔍  Search learning resources..." oninput="renderMaterials()">
+          <select class="field" id="yearFilter" onchange="renderMaterials()"><option value="">All years</option><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select>
+          <select class="field" id="semesterFilter" onchange="renderMaterials()"><option value="">All semesters</option><option>Semester 1</option><option>Semester 2</option></select>
+        </div>
+        <div class="material-grid" id="materialGrid"></div>
+      </section>
+
+      <section class="page" id="loans">
+        <div class="section-head"><div><h2>Borrow History</h2><p>Track issue dates, expected return dates, and book status.</p></div><button class="btn" onclick="navigate('books')">Find a book</button></div>
+        <div class="table-wrap"><table><thead><tr><th>BOOK TITLE</th><th>ISSUE DATE</th><th>DUE DATE</th><th>RETURN STATUS</th><th>FINE</th><th>ACTION</th></tr></thead><tbody id="loanTable"></tbody></table></div>
+      </section>
+
+      <section class="page" id="fines">
+        <div class="section-head"><div><h2>Fines & Payments</h2><p>Review overdue books and outstanding library fines.</p></div></div>
+        <div class="stats" style="grid-template-columns:repeat(2,minmax(0,1fr));max-width:650px">
+          <div class="stat"><span class="stat-label">Outstanding fine</span><h2 id="fineTotal">₹0</h2><small>Calculated at ₹5 per overdue day</small></div>
+          <div class="stat"><span class="stat-label">Overdue books</span><h2 id="overdueCount">0</h2><small>Books past their due date</small></div>
+        </div>
+        <div class="note">Fine calculation: ₹5 per overdue day, based on the due date and today's date. This is a sample college policy; your librarian can apply the actual policy.</div>
+        <div class="table-wrap"><table><thead><tr><th>BOOK</th><th>DUE DATE</th><th>DAYS OVERDUE</th><th>FINE AMOUNT</th><th>STATUS</th></tr></thead><tbody id="fineTable"></tbody></table></div>
+      </section>
+
+      <section class="page" id="manage">
+        <div class="section-head"><div><h2>Library Administration</h2><p>Manage book inventory, lending activity, and student records.</p></div></div>
+        <div class="stats">
+          <div class="stat"><span class="stat-label">Total titles</span><h2 id="adminTitles">0</h2><small>Catalog records</small></div>
+          <div class="stat"><span class="stat-label">Available copies</span><h2 id="adminAvailable">0</h2><small>Ready for issue</small></div>
+          <div class="stat"><span class="stat-label">Active loans</span><h2 id="adminLoans">0</h2><small>Not yet returned</small></div>
+          <div class="stat"><span class="stat-label">Fine outstanding</span><h2 id="adminFine">₹0</h2><small>Across demo records</small></div>
+        </div>
+        <div class="section-head"><div><h2>Inventory management</h2><p>Add, edit, delete, and issue books.</p></div><button class="btn" onclick="openBookModal()">+ Add new book</button></div>
+        <div class="toolbar"><input class="search-input" id="adminSearch" placeholder="Search inventory..." oninput="renderAdmin()"></div>
+        <div class="table-wrap"><table><thead><tr><th>BOOK</th><th>AUTHOR</th><th>COPIES</th><th>AVAILABLE</th><th>MANAGE</th></tr></thead><tbody id="adminTable"></tbody></table></div>
+        <div class="section-head"><div><h2>Borrowing records</h2><p>Use the return action to update book status.</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>BOOK</th><th>DUE DATE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="adminLoanTable"></tbody></table></div>
+      </section>
+
+      <section class="page" id="profile">
+        <div class="section-head"><div><h2>My Profile</h2><p>Manage your library account information.</p></div></div>
+        <div class="panel profile-box">
+          <div style="display:flex;align-items:center;gap:15px;margin-bottom:25px"><div class="avatar" style="width:62px;height:62px;font-size:21px">SL</div><div><h3 id="profileNameHeading">Sai Lahari</h3><p class="panel-desc">College Library Member</p></div></div>
+          <div class="note">This demo stores changes in your current browser session. A production system should use secure server-side accounts.</div>
+          <form id="profileForm" onsubmit="saveProfile(event)">
+            <div class="form-grid">
+              <div class="form-group"><label>Full name</label><input class="field" id="profileName" required></div>
+              <div class="form-group"><label>Student ID</label><input class="field" id="profileId" value="STU2026001"></div>
+              <div class="form-group"><label>Email address</label><input class="field" id="profileEmail" type="email" required></div>
+              <div class="form-group"><label>Department</label><select class="field" id="profileDept"><option>Artificial Intelligence & ML</option><option>Computer Science</option><option>Electronics</option><option>Information Technology</option></select></div>
+              <div class="form-group full"><label>Year of study</label><select class="field" id="profileYear"><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select></div>
+            </div>
+            <button class="btn" style="margin-top:20px">Save profile</button>
+          </form>
+        </div>
+      </section>
+      <div class="footer">LibraSpace · College Library Management System</div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head"><h2 id="modalTitle">Add book</h2><button class="close-btn" onclick="closeModal()">✕</button></div>
+    <form id="modalForm"><div id="modalFields"></div><button class="btn" id="modalSubmit">Save</button></form>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const today = new Date();
+const dateOffset = days => {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0,10);
+};
+let role = "student";
+let currentUser = {name:"Sai Lahari", id:"STU2026001", email:"lahari@example.com",
+  dept:"Artificial Intelligence & ML", year:"4th Year"};
+
+let books = [
+ {id:1,title:"Introduction to Algorithms",author:"Thomas H. Cormen",isbn:"9780262046305",category:"Computer Science",total:5,available:3,icon:"📘"},
+ {id:2,title:"Artificial Intelligence: A Modern Approach",author:"Stuart Russell",isbn:"9780134610993",category:"Artificial Intelligence",total:4,available:2,icon:"🤖"},
+ {id:3,title:"Database System Concepts",author:"Abraham Silberschatz",isbn:"9780078022159",category:"Database",total:6,available:4,icon:"🗄️"},
+ {id:4,title:"Clean Code",author:"Robert C. Martin",isbn:"9780132350884",category:"Computer Science",total:3,available:1,icon:"📗"},
+ {id:5,title:"Discrete Mathematics",author:"Kenneth Rosen",isbn:"9781259676512",category:"Mathematics",total:4,available:4,icon:"📙"},
+ {id:6,title:"The Alchemist",author:"Paulo Coelho",isbn:"9780062315007",category:"Literature",total:3,available:3,icon:"📕"}
+];
+let loans = [
+ {id:1,bookId:1,student:"Sai Lahari",studentId:"STU2026001",issue:dateOffset(-12),due:dateOffset(-5),returned:false},
+ {id:2,bookId:3,student:"Sai Lahari",studentId:"STU2026001",issue:dateOffset(-4),due:dateOffset(10),returned:false},
+ {id:3,bookId:4,student:"Sai Lahari",studentId:"STU2026001",issue:dateOffset(-20),due:dateOffset(-13),returned:true}
+];
+let materials = [
+ {id:1,title:"Data Structures & Algorithms",desc:"Lecture notes, algorithm examples, and practice problems.",year:"2nd Year",semester:"Semester 1",subject:"Computer Science",icon:"📘"},
+ {id:2,title:"Machine Learning Fundamentals",desc:"Model concepts, supervised learning, and revision notes.",year:"3rd Year",semester:"Semester 1",subject:"Artificial Intelligence",icon:"🤖"},
+ {id:3,title:"Database Management Systems",desc:"SQL queries, normalization, and relational database notes.",year:"2nd Year",semester:"Semester 2",subject:"Database",icon:"🗄️"},
+ {id:4,title:"Data Visualization with R",desc:"Charts, plotting methods, and visualization lab notes.",year:"3rd Year",semester:"Semester 2",subject:"Data Analytics",icon:"📊"},
+ {id:5,title:"Python Programming",desc:"Python syntax, functions, and hands-on exercises.",year:"1st Year",semester:"Semester 1",subject:"Programming",icon:"🐍"},
+ {id:6,title:"Artificial Intelligence Notes",desc:"Search methods, knowledge representation, and AI concepts.",year:"4th Year",semester:"Semester 1",subject:"Artificial Intelligence",icon:"🧠"}
+];
+let nextBookId = 7, nextMaterialId = 7, nextLoanId = 4, editingBookId = null;
+
+function escapeHTML(s) {
+ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function formatDate(d) {
+ if(!d) return "—";
+ return new Date(d+"T00:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+}
+function fineFor(loan) {
+ if(loan.returned) return 0;
+ const days = Math.max(0, Math.floor((new Date(dateOffset(0)+"T00:00:00") - new Date(loan.due+"T00:00:00")) / 86400000));
+ return days * 5;
+}
+function daysLate(loan) { return Math.floor(fineFor(loan)/5); }
+function activeLoans() { return loans.filter(l=>!l.returned); }
+function userLoans() { return loans.filter(l=>role==="admin" || l.studentId===currentUser.id); }
+function bookById(id) { return books.find(b=>b.id===id); }
+function showToast(message) {
+ const t=$("toast"); t.textContent=message; t.classList.add("show");
+ clearTimeout(showToast.timer); showToast.timer=setTimeout(()=>t.classList.remove("show"),2800);
+}
+function navigate(page) {
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ $(page).classList.add("active");
+ document.querySelectorAll(".nav-btn[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ const titles={dashboard:"Dashboard",books:"Book Catalog",materials:"Study Materials",loans:"My Borrow History",fines:"Fines & Payments",manage:"Library Administration",profile:"My Profile"};
+ $("topTitle").textContent=titles[page]||"Library";
+ $("sidebar").classList.remove("mobile-open");
+ renderAll();
+}
+document.querySelectorAll(".nav-btn[data-page]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.page)));
+function toggleSidebar() { $("sidebar").classList.toggle("mobile-open"); }
+function changeRole() {
+ role=$("roleSelect").value;
+ document.querySelectorAll(".admin-nav,.admin-only").forEach(el=>el.style.display=role==="admin"?(el.classList.contains("nav-btn")?"flex":"inline-block"):"none");
+ $("welcomeTitle").textContent=role==="admin"?"Welcome, Librarian! 👋":`Welcome back, ${currentUser.name}! 👋`;
+ $("topAvatar").textContent=role==="admin"?"LA":currentUser.name.split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase();
+ renderAll();
+ showToast(role==="admin"?"Librarian demo view enabled":"Student view enabled");
+}
+function renderDashboard() {
+ const mine=userLoans(), active=mine.filter(l=>!l.returned);
+ $("totalBooks").textContent=books.reduce((s,b)=>s+b.total,0).toLocaleString("en-IN");
+ $("availableBooks").textContent=books.reduce((s,b)=>s+b.available,0);
+ $("myBorrowed").textContent=active.length;
+ $("myFine").textContent="₹"+mine.reduce((s,l)=>s+fineFor(l),0);
+ $("recentBooks").innerHTML=books.slice(0,4).map((b,i)=>`
+ <div class="book-row"><div class="cover c${i+1}">${b.icon}</div><div class="book-info"><strong>${escapeHTML(b.title)}</strong><p>${escapeHTML(b.author)}</p></div><span class="pill ${b.available?"available":"issued"}">${b.available?"Available":"Issued"}</span></div>`).join("");
+}
+function renderBooks() {
+ const q=($("bookSearch")?.value||"").toLowerCase(), cat=$("categoryFilter")?.value||"";
+ const rows=books.filter(b=>(`${b.title} ${b.author} ${b.isbn} ${b.category}`.toLowerCase().includes(q))&&(!cat||b.category===cat));
+ $("bookTable").innerHTML=rows.length?rows.map(b=>`<tr>
+ <td><strong>${escapeHTML(b.title)}</strong><div style="color:var(--muted);margin-top:5px">${escapeHTML(b.author)}</div></td>
+ <td>${escapeHTML(b.isbn)}</td><td>${escapeHTML(b.category)}</td>
+ <td><span class="pill ${b.available?"available":"issued"}">${b.available?b.available+" available":"Unavailable"}</span></td>
+ <td>${role==="admin"?`<button class="small-btn" style="background:#efedff;color:#4f46e5" onclick="issueBook(${b.id})">Issue</button> <button class="small-btn btn-outline" onclick="editBook(${b.id})">Edit</button>`:b.available?`<button class="small-btn" style="background:#efedff;color:#4f46e5" onclick="requestBook(${b.id})">Request</button>`:"—"}</td>
+ </tr>`).join(""):`<tr><td colspan="5" class="empty">No books found. Try a different search.</td></tr>`;
+}
+function renderMaterials() {
+ const q=($("materialSearch")?.value||"").toLowerCase(), y=$("yearFilter")?.value||"", s=$("semesterFilter")?.value||"";
+ const list=materials.filter(m=>(`${m.title} ${m.subject} ${m.desc}`.toLowerCase().includes(q))&&(!y||m.year===y)&&(!s||m.semester===s));
+ $("materialGrid").innerHTML=list.length?list.map(m=>`<div class="material-card">
+ <div class="material-icon">${m.icon}</div><h3>${escapeHTML(m.title)}</h3><p>${escapeHTML(m.desc)}</p>
+ <div class="material-meta"><span>${escapeHTML(m.year)}</span><span>${escapeHTML(m.semester)}</span><span>${escapeHTML(m.subject)}</span></div>
+ <button class="btn" onclick="downloadMaterial(${m.id})">↓ Download resource</button>
+ ${role==="admin"?`<button class="btn btn-outline" style="margin-top:8px" onclick="deleteMaterial(${m.id})">Delete resource</button>`:""}
+ </div>`).join(""):`<div class="panel empty">No materials match your filters.</div>`;
+}
+function renderLoans() {
+ const list=userLoans();
+ $("loanTable").innerHTML=list.length?list.map(l=>{
+ const b=bookById(l.bookId); if(!b)return "";
+ const f=fineFor(l);
+ return `<tr><td><strong>${escapeHTML(b.title)}</strong></td><td>${formatDate(l.issue)}</td><td>${formatDate(l.due)}</td>
+ <td><span class="pill ${l.returned?"available":f?"overdue":"issued"}">${l.returned?"Returned":f?"Overdue":"Issued"}</span></td>
+ <td>₹${f}</td><td>${role==="admin"&&!l.returned?`<button class="small-btn btn-green" onclick="returnBook(${l.id})">Return</button>`:"—"}</td></tr>`;
+ }).join(""):`<tr><td colspan="6" class="empty">No borrowing records yet. Visit the catalog to find a book.</td></tr>`;
+ const due=userLoans().filter(l=>!l.returned&&fineFor(l)>0);
+ $("fineTotal").textContent="₹"+userLoans().reduce((s,l)=>s+fineFor(l),0);
+ $("overdueCount").textContent=due.length;
+ $("fineTable").innerHTML=userLoans().length?userLoans().map(l=>{
+ const b=bookById(l.bookId);if(!b)return "";
+ const d=daysLate(l),f=fineFor(l);
+ return `<tr><td>${escapeHTML(b.title)}</td><td>${formatDate(l.due)}</td><td>${d}</td><td>₹${f}</td><td><span class="pill ${f?"overdue":"available"}">${f?"Pending":"No fine"}</span></td></tr>`;
+ }).join(""):`<tr><td colspan="5" class="empty">No fines or borrowing records.</td></tr>`;
+ $("adminLoanTable").innerHTML=loans.length?loans.map(l=>`<tr><td>${escapeHTML(l.student)}</td><td>${escapeHTML(bookById(l.bookId)?.title||"Deleted book")}</td><td>${formatDate(l.due)}</td><td><span class="pill ${l.returned?"available":fineFor(l)?"overdue":"issued"}">${l.returned?"Returned":fineFor(l)?"Overdue":"Issued"}</span></td><td>${l.returned?"—":`<button class="small-btn btn-green" onclick="returnBook(${l.id})">Return</button>`}</td></tr>`).join(""):`<tr><td colspan="5" class="empty">No lending records.</td></tr>`;
+}
+function renderAdmin() {
+ const q=($("adminSearch")?.value||"").toLowerCase(), list=books.filter(b=>`${b.title} ${b.author}`.toLowerCase().includes(q));
+ $("adminTitles").textContent=books.length;
+ $("adminAvailable").textContent=books.reduce((s,b)=>s+b.available,0);
+ $("adminLoans").textContent=activeLoans().length;
+ $("adminFine").textContent="₹"+loans.reduce((s,l)=>s+fineFor(l),0);
+ $("adminTable").innerHTML=list.length?list.map(b=>`<tr><td><strong>${escapeHTML(b.title)}</strong><div style="color:var(--muted);margin-top:5px">${escapeHTML(b.isbn)}</div></td><td>${escapeHTML(b.author)}</td><td>${b.total}</td><td>${b.available}</td><td><div class="actions"><button class="small-btn" style="background:#efedff;color:#4f46e5" onclick="issueBook(${b.id})">Issue</button><button class="small-btn btn-outline" onclick="editBook(${b.id})">Edit</button><button class="small-btn btn-danger" onclick="deleteBook(${b.id})">Delete</button></div></td></tr>`).join(""):`<tr><td colspan="5" class="empty">No books found.</td></tr>`;
+}
+function renderAll() { renderDashboard();renderBooks();renderMaterials();renderLoans();renderAdmin(); }
+function requestBook(id) {
+ const b=bookById(id); if(!b||!b.available){showToast("This book is currently unavailable.");return;}
+ if(loans.some(l=>l.bookId===id&&l.studentId===currentUser.id&&!l.returned)){showToast("You already have this book on loan.");return;}
+ if(!confirm(`Request "${b.title}"? In this demo, the request will be recorded as an issue.`))return;
+ createLoan(b,currentUser.name,currentUser.id);
+}
+function issueBook(id) {
+ if(role!=="admin"){showToast("Switch to Librarian Admin to issue books.");return;}
+ const b=bookById(id);if(!b||b.available<1){showToast("No copies available.");return;}
+ const name=prompt("Enter student name:",currentUser.name);if(!name?.trim())return;
+ const sid=prompt("Enter student ID:",name===currentUser.name?currentUser.id:"STU2026002");if(!sid?.trim())return;
+ if(loans.some(l=>l.bookId===id&&l.studentId===sid.trim()&&!l.returned)){showToast("This student already has this book.");return;}
+ createLoan(b,name.trim(),sid.trim());
+}
+function createLoan(b,name,sid) {
+ if(b.available<1){showToast("No copies available.");return;}
+ b.available--;
+ loans.push({id:nextLoanId++,bookId:b.id,student:name,studentId:sid,issue:dateOffset(0),due:dateOffset(14),returned:false});
+ renderAll();showToast("Book issued successfully. Due in 14 days.");
+}
+function returnBook(id) {
+ if(role!=="admin"){showToast("Only the librarian can record returns.");return;}
+ const l=loans.find(x=>x.id===id);if(!l||l.returned)return;
+ const b=bookById(l.bookId);const fine=fineFor(l);
+ if(!confirm(`Record return${fine?`? Outstanding fine: ₹${fine}`:""}?`))return;
+ l.returned=true;if(b)b.available=Math.min(b.total,b.available+1);
+ renderAll();showToast(fine?`Book returned. Fine due: ₹${fine}`:"Book returned successfully.");
+}
+function openModal(title,fields,onSubmit) {
+ $("modalTitle").textContent=title;$("modalFields").innerHTML=fields;
+ $("modalForm").onsubmit=onSubmit;$("modalBackdrop").classList.add("open");
+}
+function closeModal(){$("modalBackdrop").classList.remove("open");}
+function openBookModal() {
+ editingBookId=null;
+ openModal("Add new book",`
+ <div class="form-group"><label>Book title</label><input class="field" name="title" required></div>
+ <div class="form-group"><label>Author</label><input class="field" name="author" required></div>
+ <div class="form-group"><label>ISBN</label><input class="field" name="isbn" required></div>
+ <div class="form-group"><label>Category</label><select class="field" name="category"><option>Computer Science</option><option>Artificial Intelligence</option><option>Mathematics</option><option>Database</option><option>Literature</option></select></div>
+ <div class="form-group"><label>Total copies</label><input class="field" type="number" name="total" min="1" value="1" required></div>`,
+ e=>{e.preventDefault();const f=new FormData(e.target);const n=Number(f.get("total"));books.push({id:nextBookId++,title:f.get("title").trim(),author:f.get("author").trim(),isbn:f.get("isbn").trim(),category:f.get("category"),total:n,available:n,icon:"📘"});closeModal();renderAll();showToast("Book added to catalog.");});
+}
+function editBook(id) {
+ const b=bookById(id);if(!b)return;editingBookId=id;
+ openModal("Update book details",`
+ <div class="form-group"><label>Book title</label><input class="field" name="title" value="${escapeHTML(b.title)}" required></div>
+ <div class="form-group"><label>Author</label><input class="field" name="author" value="${escapeHTML(b.author)}" required></div>
+ <div class="form-group"><label>ISBN</label><input class="field" name="isbn" value="${escapeHTML(b.isbn)}" required></div>
+ <div class="form-group"><label>Total copies (minimum ${b.total-b.available} already issued)</label><input class="field" type="number" name="total" min="${b.total-b.available}" value="${b.total}" required></div>`,
+ e=>{e.preventDefault();const f=new FormData(e.target),total=Number(f.get("total"));b.title=f.get("title").trim();b.author=f.get("author").trim();b.isbn=f.get("isbn").trim();b.available=total-(b.total-b.available);b.total=total;closeModal();renderAll();showToast("Book details updated.");});
+}
+function deleteBook(id) {
+ const b=bookById(id);if(!b)return;
+ if(loans.some(l=>l.bookId===id&&!l.returned)){showToast("Return all issued copies before deleting this book.");return;}
+ if(!confirm(`Delete "${b.title}" from the catalog?`))return;
+ books=books.filter(x=>x.id!==id);renderAll();showToast("Book deleted.");
+}
+function openMaterialModal() {
+ openModal("Add study material",`
+ <div class="form-group"><label>Material title</label><input class="field" name="title" required></div>
+ <div class="form-group"><label>Description</label><input class="field" name="desc" required></div>
+ <div class="form-group"><label>Academic year</label><select class="field" name="year"><option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option></select></div>
+ <div class="form-group"><label>Semester</label><select class="field" name="semester"><option>Semester 1</option><option>Semester 2</option></select></div>
+ <div class="form-group"><label>Subject</label><input class="field" name="subject" required></div>
+ <div class="form-group"><label>Resource URL (optional)</label><input class="field" name="url" type="url" placeholder="https://..."></div>`,
+ e=>{e.preventDefault();const f=new FormData(e.target);materials.push({id:nextMaterialId++,title:f.get("title").trim(),desc:f.get("desc").trim(),year:f.get("year"),semester:f.get("semester"),subject:f.get("subject").trim(),url:f.get("url").trim(),icon:"📄"});closeModal();renderMaterials();showToast("Study material added.");});
+}
+function deleteMaterial(id) {
+ if(!confirm("Delete this study material?"))return;
+ materials=materials.filter(m=>m.id!==id);renderMaterials();showToast("Material deleted.");
+}
+function downloadMaterial(id) {
+ const m=materials.find(x=>x.id===id);if(!m)return;
+ if(m.url){window.open(m.url,"_blank","noopener,noreferrer");return;}
+ const text=`${m.title}\n\n${m.desc}\n\nSubject: ${m.subject}\nYear: ${m.year}\nSemester: ${m.semester}\n\nLibraSpace sample study resource. Replace this file with the actual college notes PDF.`;
+ const url=URL.createObjectURL(new Blob([text],{type:"text/plain;charset=utf-8"}));
+ const a=document.createElement("a");a.href=url;a.download=m.title.replace(/[^a-z0-9]/gi,"_")+".txt";a.click();URL.revokeObjectURL(url);
+ showToast("Sample resource downloaded. Add a real PDF URL for actual notes.");
+}
+function openContact() {
+ openModal("Contact librarian",`
+ <div class="form-group"><label>Your email</label><input class="field" name="email" type="email" required value="${escapeHTML(currentUser.email)}"></div>
+ <div class="form-group"><label>Subject</label><input class="field" name="subject" required placeholder="How can we help?"></div>
+ <div class="form-group"><label>Message</label><textarea class="field" name="message" rows="4" style="width:100%;resize:vertical" required></textarea></div>`,
+ e=>{e.preventDefault();closeModal();showToast("Demo message recorded locally. Connect a backend to send it.");});
+}
+function saveProfile(e) {
+ e.preventDefault();
+ currentUser.name=$("profileName").value.trim();currentUser.id=$("profileId").value.trim();
+ currentUser.email=$("profileEmail").value.trim();currentUser.dept=$("profileDept").value;currentUser.year=$("profileYear").value;
+ $("profileNameHeading").textContent=currentUser.name;
+ $("topAvatar").textContent=currentUser.name.split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase();
+ $("welcomeTitle").textContent=`Welcome back, ${currentUser.name}! 👋`;
+ renderAll();showToast("Profile updated for this session.");
+}
+function initializeProfile() {
+ $("profileName").value=currentUser.name;$("profileId").value=currentUser.id;
+ $("profileEmail").value=currentUser.email;$("profileDept").value=currentUser.dept;$("profileYear").value=currentUser.year;
+ $("profileNameHeading").textContent=currentUser.name;
+}
+
+const DEMO_USERS = [
+  {
+    name: "Sai Lahari",
+    email: "student@library.com",
+    password: "student123",
+    id: "STU2026001",
+    dept: "Artificial Intelligence & ML",
+    year: "4th Year",
+    role: "student"
+  },
+  {
+    name: "Library Admin",
+    email: "admin@library.com",
+    password: "admin123",
+    id: "LIB001",
+    dept: "Library Administration",
+    year: "Staff",
+    role: "admin"
+  }
+];
+
+function getRegisteredUsers() {
+  try {
+    return JSON.parse(localStorage.getItem("libraUsers") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function showAuthForm(type) {
+  $("loginForm").style.display = type === "login" ? "block" : "none";
+  $("registerForm").style.display = type === "register" ? "block" : "none";
+  $("loginError").textContent = "";
+  $("registerError").textContent = "";
+}
+
+function loginUser(event) {
+  event.preventDefault();
+
+  const email = $("loginEmail").value.trim().toLowerCase();
+  const password = $("loginPassword").value;
+
+  const users = [...DEMO_USERS, ...getRegisteredUsers()];
+  const user = users.find(u =>
+    u.email.toLowerCase() === email && u.password === password
+  );
+
+  if (!user) {
+    $("loginError").textContent =
+      "Invalid email or password. Please try again.";
+    return;
+  }
+
+  currentUser = {
+    name: user.name,
+    id: user.id,
+    email: user.email,
+    dept: user.dept || "Artificial Intelligence & ML",
+    year: user.year || "1st Year"
+  };
+
+  role = user.role;
+  $("roleSelect").value = role;
+  $("authScreen").style.display = "none";
+  $("appRoot").style.display = "flex";
+
+  initializeProfile();
+  changeRole();
+  navigate("dashboard");
+
+  showToast("Welcome, " + currentUser.name + "!");
+}
+
+function registerUser(event) {
+  event.preventDefault();
+
+  const name = $("registerName").value.trim();
+  const email = $("registerEmail").value.trim().toLowerCase();
+  const id = $("registerId").value.trim();
+  const password = $("registerPassword").value;
+
+  const users = getRegisteredUsers();
+
+  const duplicate = [...DEMO_USERS, ...users].some(u =>
+    u.email.toLowerCase() === email ||
+    u.id.toLowerCase() === id.toLowerCase()
+  );
+
+  if (duplicate) {
+    $("registerError").textContent =
+      "This email or student ID is already registered.";
+    return;
+  }
+
+  const newUser = {
+    name,
+    email,
+    id,
+    password,
+    role: "student",
+    dept: "Artificial Intelligence & ML",
+    year: "1st Year"
+  };
+
+  try {
+    users.push(newUser);
+    localStorage.setItem("libraUsers", JSON.stringify(users));
+  } catch {
+    $("registerError").textContent =
+      "Unable to save account in this browser.";
+    return;
+  }
+
+  $("loginEmail").value = email;
+  $("loginPassword").value = "";
+  showAuthForm("login");
+  $("loginError").textContent =
+    "Registration successful! Please sign in.";
+}
+
+function logoutUser() {
+  $("appRoot").style.display = "none";
+  $("authScreen").style.display = "grid";
+
+  $("loginForm").reset();
+  $("registerForm").reset();
+
+  $("roleSelect").value = "student";
+  role = "student";
+
+  showAuthForm("login");
+  showToast("You have successfully signed out.");
+}
+
+</script>
+</body>
+</html>
