@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BusGo | Online Bus Ticket Booking</title>
+<style>
+:root{--navy:#10284b;--blue:#176b87;--orange:#ff6b35;--gold:#ffca5c;--bg:#f4f7fb;--text:#182235;--muted:#718096;--line:#e0e7f0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+header{background:var(--navy);color:white;padding:16px 6%;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{font-size:25px;font-weight:bold;color:var(--gold)}
+nav{display:flex;gap:8px;flex-wrap:wrap}
+nav button{background:transparent;color:white;padding:9px 11px}
+nav button:hover{background:#ffffff1c}
+button{cursor:pointer;border:0;border-radius:7px;padding:11px 15px;font-weight:bold;font-size:14px}
+button:disabled{opacity:.55;cursor:not-allowed}
+.primary{background:var(--orange);color:white}
+.secondary{background:#e7edf6;color:#193456}
+.danger{background:#ffe5e5;color:#a52121}
+.hero{padding:45px 6%;background:linear-gradient(120deg,var(--navy),var(--blue));color:white}
+.hero h1{font-size:clamp(28px,4vw,40px);margin-bottom:8px}
+.hero>p{margin-bottom:24px;color:#e3edf7}
+.search{background:white;color:var(--text);border-radius:12px;padding:20px;display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:14px}
+label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cfd8e5;border-radius:7px;font:inherit;background:white;color:var(--text)}
+input:focus,select:focus,textarea:focus{outline:2px solid #8bc8e0;border-color:var(--blue)}
+main{max-width:1200px;margin:28px auto;padding:0 18px}
+.section{background:white;padding:22px;border-radius:12px;margin-bottom:22px;box-shadow:0 3px 15px #12284b0a}
+h2{font-size:23px;margin-bottom:15px}
+h3{font-size:17px;margin-bottom:8px}
+.muted{color:var(--muted);font-size:14px}
+.bus{border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;display:grid;grid-template-columns:2fr 1fr 1fr auto;align-items:center;gap:14px}
+.price{font-size:21px;font-weight:bold;color:#126a87}
+.tag{display:inline-block;background:#e5f5ee;color:#16734b;padding:4px 8px;border-radius:5px;font-size:12px;margin-top:7px}
+.hidden{display:none!important}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.field{margin-bottom:12px}
+.seats{display:grid;grid-template-columns:repeat(5,48px);gap:9px;justify-content:center;margin:20px auto;max-width:290px}
+.seat{background:#e3f3e8;color:#176b3d;padding:10px 0}
+.seat.selected{background:#167bba;color:white}
+.seat.booked{background:#d5dbe3;color:#777;cursor:not-allowed}
+.seat.aisle{visibility:hidden;pointer-events:none}
+.notice{padding:12px;background:#e8f6ee;color:#16663f;border-radius:7px;margin:12px 0}
+.message{margin-top:12px;min-height:22px;font-size:14px}
+.error{color:#b42318}
+.success{color:#16734b}
+table{width:100%;border-collapse:collapse;min-width:750px}
+th,td{text-align:left;padding:11px;border-bottom:1px solid #e6ebf2;font-size:14px}
+th{background:#f4f7fb}
+.table-wrap{overflow-x:auto}
+.stat{background:#f7f9fc;border:1px solid var(--line);border-radius:10px;padding:16px}
+.stat p{font-size:23px;font-weight:bold;color:var(--blue);margin-top:5px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+footer{text-align:center;padding:24px;background:var(--navy);color:white;margin-top:30px}
+@media(max-width:760px){.search{grid-template-columns:1fr 1fr}.bus{grid-template-columns:1fr 1fr}.hero{padding:32px 5%}}
+@media(max-width:480px){header{padding:14px 4%}nav{width:100%}nav button{padding:8px}.search,.bus{grid-template-columns:1fr}.section{padding:16px}.seats{grid-template-columns:repeat(5,42px)}}
+@media print{header,nav,.hero,.no-print,footer{display:none!important}body{background:white}main{max-width:none;margin:0;padding:0}.section{box-shadow:none;border:1px solid #ddd}.hidden{display:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🚌 BusGo</div>
+  <nav>
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="openAccount()">Login / Account</button>
+    <button onclick="showPage('history')">My Bookings</button>
+    <button onclick="showPage('comments')">Reviews</button>
+    <button onclick="openAdmin()">Admin</button>
+  </nav>
+</header>
+
+<section class="hero" id="hero">
+  <h1>Your journey starts here.</h1>
+  <p>Search buses, choose your seat, and book your next trip.</p>
+  <div class="search">
+    <div><label for="from">From</label><select id="from"><option>Chennai</option><option>Bengaluru</option><option>Hyderabad</option><option>Vijayawada</option><option>Hindupur</option></select></div>
+    <div><label for="to">To</label><select id="to"><option>Bengaluru</option><option>Chennai</option><option>Hyderabad</option><option>Vijayawada</option><option>Hindupur</option></select></div>
+    <div><label for="date">Journey Date</label><input type="date" id="date"></div>
+    <div style="display:flex;align-items:end"><button class="primary" style="width:100%" onclick="searchBuses()">Search Buses</button></div>
+  </div>
+</section>
+
+<main>
+<section id="home" class="section page">
+  <h2>Available Buses</h2>
+  <p class="muted">Choose a bus to see available seats and fare.</p>
+  <div id="busList"></div>
+</section>
+
+<section id="booking" class="section page hidden">
+  <h2>Select Your Seats</h2>
+  <p id="selectedBus" class="muted"></p>
+  <p style="text-align:center;margin-top:18px">🚌 Front of bus</p>
+  <div class="seats" id="seatGrid"></div>
+  <p id="seatSummary" style="text-align:center;font-weight:bold"></p>
+  <h2 style="margin-top:25px">Passenger Details</h2>
+  <div class="grid">
+    <div class="field"><label for="passenger">Full Name</label><input id="passenger" autocomplete="name" placeholder="Passenger name"></div>
+    <div class="field"><label for="phone">Phone Number</label><input id="phone" type="tel" inputmode="numeric" placeholder="10-digit mobile number" maxlength="10"></div>
+    <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" placeholder="name@example.com"></div>
+  </div>
+  <p id="bookingError" class="message error" aria-live="polite"></p>
+  <div class="actions"><button class="primary" onclick="confirmBooking()">Confirm Booking</button><button class="secondary" onclick="showPage('home')">Back to Buses</button></div>
+</section>
+
+<section id="history" class="section page hidden">
+  <h2>My Bookings</h2>
+  <p class="muted">Bookings created during this browser session are shown below.</p>
+  <div id="historyList"></div>
+</section>
+
+<section id="login" class="section page hidden">
+  <h2>User Account</h2>
+  <div id="loginForm">
+    <h3>Login</h3>
+    <div class="grid">
+      <div class="field"><label for="loginEmail">Email</label><input type="email" id="loginEmail" placeholder="Enter email"></div>
+      <div class="field"><label for="loginPassword">Password</label><input type="password" id="loginPassword" placeholder="Enter password"></div>
+    </div>
+    <div class="actions"><button class="primary" onclick="loginUser()">Login</button><button class="secondary" onclick="showAuthForm('registerForm')">Register</button><button class="secondary" onclick="showAuthForm('forgotForm')">Forgot Password?</button></div>
+  </div>
+  <div id="registerForm" class="hidden">
+    <h3>Create Account</h3>
+    <div class="grid">
+      <div class="field"><label for="regName">Full Name</label><input id="regName" placeholder="Full name"></div>
+      <div class="field"><label for="regEmail">Email</label><input type="email" id="regEmail" placeholder="Email address"></div>
+      <div class="field"><label for="regPassword">Password</label><input type="password" id="regPassword" placeholder="At least 6 characters"></div>
+    </div>
+    <div class="actions"><button class="primary" onclick="registerUser()">Create Account</button><button class="secondary" onclick="showAuthForm('loginForm')">Back to Login</button></div>
+  </div>
+  <div id="forgotForm" class="hidden">
+    <h3>Forgot Password</h3>
+    <p class="muted">Demo only: password reset is simulated in this browser and no email is sent.</p>
+    <div class="field"><label for="forgotEmail">Registered Email</label><input type="email" id="forgotEmail" placeholder="Enter registered email"></div>
+    <div class="actions"><button class="primary" onclick="forgotPassword()">Reset Password</button><button class="secondary" onclick="showAuthForm('loginForm')">Back to Login</button></div>
+  </div>
+  <div id="changeForm" class="hidden">
+    <h3>Change Password</h3>
+    <div class="grid">
+      <div class="field"><label for="oldPassword">Current Password</label><input type="password" id="oldPassword"></div>
+      <div class="field"><label for="newPassword">New Password</label><input type="password" id="newPassword"></div>
+    </div>
+    <div class="actions"><button class="primary" onclick="changePassword()">Update Password</button><button class="secondary" onclick="showAuthForm('accountPanel')">Back</button></div>
+  </div>
+  <div id="accountPanel" class="hidden">
+    <div class="notice" id="welcomeMessage"></div>
+    <div class="actions"><button class="primary" onclick="showPage('history')">My Bookings</button><button class="secondary" onclick="showAuthForm('changeForm')">Change Password</button><button class="danger" onclick="logoutUser()">Logout</button></div>
+  </div>
+  <p id="authResult" class="message" aria-live="polite"></p>
+  <p class="muted">Demo note: accounts exist only until the page is refreshed. Do not enter a real password.</p>
+</section>
+
+<section id="comments" class="section page hidden">
+  <h2>Passenger Reviews</h2>
+  <div class="field"><label for="reviewBus">Bus</label><select id="reviewBus"></select></div>
+  <div class="field"><label for="reviewText">Write a comment</label><textarea id="reviewText" rows="3" placeholder="Share your experience..."></textarea></div>
+  <button class="primary" onclick="addReview()">Post Comment</button>
+  <div id="reviewList" style="margin-top:20px"></div>
+</section>
+
+<section id="admin" class="section page hidden">
+  <h2>Admin Panel</h2>
+  <p class="muted">Demo administration panel. In a production site, protect admin access on the server.</p>
+  <h3 style="margin-top:20px">Add Bus</h3>
+  <div class="grid">
+    <div class="field"><label for="busName">Bus Name</label><input id="busName" placeholder="Express Travels"></div>
+    <div class="field"><label for="busFrom">From</label><input id="busFrom" placeholder="Chennai"></div>
+    <div class="field"><label for="busTo">To</label><input id="busTo" placeholder="Bengaluru"></div>
+    <div class="field"><label for="busType">Category</label><select id="busType"><option>AC Sleeper</option><option>Volvo</option><option>Non-AC Seater</option><option>Sleeper Coach</option></select></div>
+    <div class="field"><label for="busTime">Departure Time</label><input id="busTime" type="time" value="21:00"></div>
+    <div class="field"><label for="busFare">Fare (₹)</label><input id="busFare" type="number" min="1" value="800"></div>
+  </div>
+  <div class="actions"><button class="primary" onclick="addBus()">Add Bus</button></div>
+  <p id="adminMessage" class="message" aria-live="polite"></p>
+
+  <h3 style="margin-top:26px">Report Generation</h3>
+  <div class="grid">
+    <div class="field"><label for="reportFrom">Report From Date</label><input type="date" id="reportFrom"></div>
+    <div class="field"><label for="reportTo">Report To Date</label><input type="date" id="reportTo"></div>
+    <div class="field"><label for="reportStatus">Booking Status</label><select id="reportStatus"><option value="All">All Bookings</option><option value="Confirmed">Confirmed</option><option value="Cancelled">Cancelled</option></select></div>
+  </div>
+  <div class="actions no-print"><button class="primary" onclick="generateReport()">Generate Report</button><button class="secondary" onclick="exportReportCSV()">Download CSV</button><button class="secondary" onclick="printReport()">Print Report</button></div>
+  <div class="grid" style="margin-top:16px">
+    <div class="stat"><h3>Total Buses</h3><p id="rBuses">0</p></div>
+    <div class="stat"><h3>Total Bookings</h3><p id="rBookings">0</p></div>
+    <div class="stat"><h3>Confirmed</h3><p id="rConfirmed">0</p></div>
+    <div class="stat"><h3>Cancelled</h3><p id="rCancelled">0</p></div>
+    <div class="stat"><h3>Confirmed Revenue</h3><p id="rRevenue">₹0</p></div>
+  </div>
+  <p id="reportMessage" class="message muted" aria-live="polite"></p>
+  <div class="table-wrap" style="margin-top:14px">
+    <table>
+      <thead><tr><th>Booking ID</th><th>Passenger</th><th>Bus</th><th>Route</th><th>Travel Date</th><th>Seats</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody id="reportTable"></tbody>
+    </table>
+  </div>
+
+  <h3 style="margin-top:28px">Manage Bus Information</h3>
+  <div id="adminList"></div>
+</section>
+</main>
+
+<footer>© 2026 BusGo | Online Bus Ticket Booking System</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const initialBuses = [
+  {id:1,name:"Orange Express",from:"Chennai",to:"Bengaluru",type:"AC Sleeper",time:"21:00",fare:850,booked:[]},
+  {id:2,name:"GreenLine Travels",from:"Chennai",to:"Bengaluru",type:"Volvo",time:"22:15",fare:1100,booked:[]},
+  {id:3,name:"CityLink Coach",from:"Bengaluru",to:"Hyderabad",type:"Sleeper Coach",time:"20:30",fare:950,booked:[]},
+  {id:4,name:"South Star",from:"Hyderabad",to:"Vijayawada",type:"Non-AC Seater",time:"19:00",fare:550,booked:[]},
+  {id:5,name:"Royal Travels",from:"Chennai",to:"Hindupur",type:"AC Sleeper",time:"20:00",fare:750,booked:[]}
+];
+let buses = initialBuses.map(b=>({...b,booked:[]}));
+let bookings = [];
+let reviews = [];
+let registeredUsers = [];
+let loggedInUser = null;
+let chosenBus = null;
+let chosenSeats = [];
+let filteredReportBookings = [];
+
+const today = new Date();
+const todayString = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,"0")}-${String(today.getDate()).padStart(2,"0")}`;
+$("date").min = todayString;
+$("date").value = todayString;
+$("reportFrom").value = "";
+$("reportTo").value = "";
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("hidden",p.id!==id));
+  $("hero").classList.toggle("hidden",id!=="home");
+  if(id==="history") renderHistory();
+  if(id==="comments") renderReviews();
+  if(id==="admin"){renderAdmin();generateReport();}
+  if(id==="home") renderBuses();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function openAccount(){
+  showPage("login");
+  showAuthForm(loggedInUser ? "accountPanel" : "loginForm");
+}
+function openAdmin(){
+  // Demonstration shortcut only; use server-side admin authentication in production.
+  showPage("admin");
+}
+function searchBuses(){
+  const from=$("from").value, to=$("to").value;
+  if(from===to){alert("Please select different source and destination.");return;}
+  const list=buses.filter(b=>b.from.toLowerCase()===from.toLowerCase()&&b.to.toLowerCase()===to.toLowerCase());
+  renderBuses(list);
+}
+function renderBuses(list=buses){
+  const container=$("busList");container.innerHTML="";
+  if(!list.length){container.textContent="No buses found for this route. Try another route or add a bus from the Admin panel.";return;}
+  list.forEach(b=>{
+    const card=document.createElement("div");card.className="bus";
+    const info=document.createElement("div");
+    const h=document.createElement("h3");h.textContent=b.name;
+    const p=document.createElement("p");p.className="muted";p.textContent=`${b.from} → ${b.to} | ${b.time}`;
+    const tag=document.createElement("span");tag.className="tag";tag.textContent=b.type;
+    info.append(h,p,tag);
+    const availability=document.createElement("div");
+    const strong=document.createElement("strong");strong.textContent=`${Math.max(0,20-b.booked.length)} seats`;
+    const ap=document.createElement("p");ap.className="muted";ap.textContent="available";
+    availability.append(strong,ap);
+    const fare=document.createElement("div");
+    const fp=document.createElement("div");fp.className="price";fp.textContent=`₹${b.fare}`;
+    const fsmall=document.createElement("p");fsmall.className="muted";fsmall.textContent="per seat";
+    fare.append(fp,fsmall);
+    const btn=document.createElement("button");btn.className="primary";btn.textContent="Book Now";
+    btn.disabled=(20-b.booked.length)<=0;btn.onclick=()=>startBooking(b.id);
+    card.append(info,availability,fare,btn);container.append(card);
+  });
+}
+function startBooking(id){
+  chosenBus=buses.find(b=>b.id===id);chosenSeats=[];
+  $("selectedBus").textContent=`${chosenBus.name} | ${chosenBus.from} to ${chosenBus.to} | ${chosenBus.time} | ₹${chosenBus.fare} per seat`;
+  $("bookingError").textContent="";
+  if(loggedInUser){$("passenger").value=loggedInUser.name;$("email").value=loggedInUser.email;}
+  renderSeats();showPage("booking");
+}
+function renderSeats(){
+  const grid=$("seatGrid");grid.innerHTML="";
+  for(let i=1;i<=20;i++){
+    if(i%5===3){const aisle=document.createElement("span");aisle.className="seat aisle";grid.append(aisle);}
+    const btn=document.createElement("button");btn.className="seat";btn.textContent=i;
+    if(chosenBus.booked.includes(i)){btn.classList.add("booked");btn.disabled=true;btn.title="Already booked";}
+    else if(chosenSeats.includes(i))btn.classList.add("selected");
+    btn.onclick=()=>{
+      if(chosenSeats.includes(i))chosenSeats=chosenSeats.filter(n=>n!==i);
+      else if(chosenSeats.length<6)chosenSeats.push(i);
+      else{alert("You can select up to 6 seats per booking.");return;}
+      renderSeats();
+    };
+    grid.append(btn);
+  }
+  $("seatSummary").textContent=`Selected seats: ${chosenSeats.join(", ")||"None"} | Total: ₹${chosenSeats.length*(chosenBus?.fare||0)}`;
+}
+function confirmBooking(){
+  if(!chosenBus){$("bookingError").textContent="Please select a bus first.";return;}
+  const name=$("passenger").value.trim(),phone=$("phone").value.trim(),email=$("email").value.trim();
+  if(!name||!/^[0-9]{10}$/.test(phone)||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!chosenSeats.length){
+    $("bookingError").textContent="Enter passenger name, a valid 10-digit phone number, email, and select at least one seat.";return;
+  }
+  if(chosenSeats.some(n=>chosenBus.booked.includes(n))){alert("A selected seat is no longer available. Please select again.");renderSeats();return;}
+  const booking={ref:"BG"+Date.now().toString().slice(-8),busId:chosenBus.id,bus:chosenBus.name,from:chosenBus.from,to:chosenBus.to,date:$("date").value,seats:[...chosenSeats],name,phone,email,total:chosenSeats.length*chosenBus.fare,status:"Confirmed"};
+  chosenBus.booked.push(...chosenSeats);bookings.push(booking);
+  alert(`Booking confirmed!\nReference: ${booking.ref}\nSeats: ${booking.seats.join(", ")}\nTotal: ₹${booking.total}\n\nDemo confirmation only: no payment was processed and no email was sent.`);
+  chosenSeats=[];renderBuses();showPage("history");
+}
+function renderHistory(){
+  const el=$("historyList");el.innerHTML="";
+  const visible=loggedInUser?bookings.filter(b=>b.email.toLowerCase()===loggedInUser.email):bookings;
+  if(!visible.length){el.textContent=loggedInUser?"No bookings found for this account yet.":"No bookings yet. Log in to see your account bookings, or search for a bus to get started.";return;}
+  visible.slice().reverse().forEach(b=>{
+    const card=document.createElement("div");card.className="section";
+    const h=document.createElement("h3");h.textContent=b.bus;
+    const p=document.createElement("p");p.className="muted";p.textContent=`Reference: ${b.ref} | ${b.from} → ${b.to} | Date: ${b.date} | Seats: ${b.seats.join(", ")} | Total: ₹${b.total} | Status: ${b.status}`;
+    card.append(h,p);
+    if(b.status==="Confirmed"){
+      const btn=document.createElement("button");btn.className="danger";btn.textContent="Cancel Booking";btn.style.marginTop="10px";
+      btn.onclick=()=>{
+        if(!confirm("Are you sure you want to cancel this booking?"))return;
+        const bus=buses.find(x=>x.id===b.busId);if(bus)bus.booked=bus.booked.filter(s=>!b.seats.includes(s));
+        b.status="Cancelled";renderHistory();renderBuses();generateReport();
+      };card.append(btn);
+    }
+    el.append(card);
+  });
+}
+function showAuthForm(formId){
+  ["loginForm","registerForm","forgotForm","changeForm","accountPanel"].forEach(id=>$(id).classList.add("hidden"));
+  $(formId).classList.remove("hidden");$("authResult").textContent="";
+  $("authResult").className="message";
+}
+function registerUser(){
+  const name=$("regName").value.trim(),email=$("regEmail").value.trim().toLowerCase(),password=$("regPassword").value;
+  if(!name||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||password.length<6){
+    setAuthMessage("Enter a name, valid email and password of at least 6 characters.","error");return;
+  }
+  if(registeredUsers.some(u=>u.email===email)){setAuthMessage("This email is already registered.","error");return;}
+  registeredUsers.push({name,email,password});
+  $("loginEmail").value=email;$("loginPassword").value="";
+  showAuthForm("loginForm");setAuthMessage("Registration successful! Please log in.","success");
+}
+function loginUser(){
+  const email=$("loginEmail").value.trim().toLowerCase(),password=$("loginPassword").value;
+  const user=registeredUsers.find(u=>u.email===email&&u.password===password);
+  if(!user){setAuthMessage("Invalid email or password. Please register first.","error");return;}
+  loggedInUser=user;$("welcomeMessage").textContent=`Welcome, ${user.name} (${user.email})`;
+  showAuthForm("accountPanel");setAuthMessage("Login successful.","success");
+}
+function forgotPassword(){
+  const email=$("forgotEmail").value.trim().toLowerCase(),user=registeredUsers.find(u=>u.email===email);
+  if(!user){setAuthMessage("Email not found. Please check the address or register first.","error");return;}
+  const newPass=prompt("Demo password reset: enter a new password of at least 6 characters. No email will be sent.");
+  if(newPass===null)return;
+  if(newPass.length<6){setAuthMessage("Password must contain at least 6 characters.","error");return;}
+  user.password=newPass;showAuthForm("loginForm");setAuthMessage("Demo password updated. You can now log in.","success");
+}
+function changePassword(){
+  if(!loggedInUser){setAuthMessage("Please log in first.","error");return;}
+  const oldPass=$("oldPassword").value,newPass=$("newPassword").value;
+  if(loggedInUser.password!==oldPass){setAuthMessage("Current password is incorrect.","error");return;}
+  if(newPass.length<6){setAuthMessage("New password must contain at least 6 characters.","error");return;}
+  loggedInUser.password=newPass;$("oldPassword").value="";$("newPassword").value="";
+  showAuthForm("accountPanel");setAuthMessage("Password changed successfully for this demo session.","success");
+}
+function logoutUser(){
+  loggedInUser=null;$("loginPassword").value="";showAuthForm("loginForm");
+  setAuthMessage("You have logged out successfully.","success");
+}
+function setAuthMessage(message,kind){$("authResult").textContent=message;$("authResult").className="message "+kind;}
+function addReview(){
+  const text=$("reviewText").value.trim(),bus=$("reviewBus").value;
+  if(!text){alert("Please write a comment.");return;}
+  reviews.push({bus,text,user:loggedInUser?loggedInUser.name:"Guest"});
+  $("reviewText").value="";renderReviews();
+}
+function renderReviews(){
+  const sel=$("reviewBus");const old=sel.value;sel.innerHTML="";
+  buses.forEach(b=>{const o=document.createElement("option");o.value=b.name;o.textContent=b.name;sel.append(o);});
+  if([...sel.options].some(o=>o.value===old))sel.value=old;
+  const list=$("reviewList");list.innerHTML="";
+  if(!reviews.length){list.textContent="No comments yet.";return;}
+  reviews.slice().reverse().forEach(r=>{
+    const d=document.createElement("div");d.className="section";
+    const h=document.createElement("h3");h.textContent=`${r.bus} — ${r.user}`;
+    const p=document.createElement("p");p.textContent=r.text;d.append(h,p);list.append(d);
+  });
+}
+function addBus(){
+  const name=$("busName").value.trim(),from=$("busFrom").value.trim(),to=$("busTo").value.trim(),fare=Number($("busFare").value),time=$("busTime").value;
+  if(!name||!from||!to||from.toLowerCase()===to.toLowerCase()||!time||!Number.isFinite(fare)||fare<=0){
+    $("adminMessage").textContent="Enter valid bus name, different source/destination, time and positive fare.";$("adminMessage").className="message error";return;
+  }
+  buses.push({id:Date.now(),name,from,to,type:$("busType").value,time,fare,booked:[]});
+  ["busName","busFrom","busTo"].forEach(id=>$(id).value="");
+  $("adminMessage").textContent="Bus added successfully to the demo listing.";$("adminMessage").className="message success";
+  renderAdmin();renderBuses();renderReviews();generateReport();
+}
+function renderAdmin(){
+  const list=$("adminList");list.innerHTML="";
+  buses.forEach(b=>{
+    const row=document.createElement("div");row.className="bus";
+    const info=document.createElement("div");info.textContent=`${b.name} (${b.type})`;
+    const route=document.createElement("div");route.textContent=`${b.from} → ${b.to}`;
+    const fare=document.createElement("div");fare.textContent=`₹${b.fare} | ${b.time}`;
+    const actions=document.createElement("div");
+    const edit=document.createElement("button");edit.className="secondary";edit.textContent="Edit Fare";
+    edit.onclick=()=>{
+      const val=prompt(`Enter new fare for ${b.name}:`,String(b.fare));
+      if(val===null)return;const n=Number(val);
+      if(!Number.isFinite(n)||n<=0){alert("Enter a valid positive fare.");return;}
+      b.fare=n;renderAdmin();renderBuses();
+    };
+    const del=document.createElement("button");del.className="danger";del.textContent="Delete";del.style.marginTop="6px";
+    del.onclick=()=>{
+      if(bookings.some(x=>x.busId===b.id&&x.status==="Confirmed")){alert("Cancel confirmed bookings before deleting this bus.");return;}
+      if(!confirm(`Delete ${b.name}?`))return;
+      buses=buses.filter(x=>x.id!==b.id);renderAdmin();renderBuses();renderReviews();generateReport();
+    };
+    actions.append(edit,del);row.append(info,route,fare,actions);list.append(row);
+  });
+}
+function generateReport(){
+  const from=$("reportFrom").value,to=$("reportTo").value,status=$("reportStatus").value;
+  if(from&&to&&from>to){$("reportMessage").textContent="Error: Report start date must be on or before end date.";$("reportMessage").className="message error";return;}
+  filteredReportBookings=bookings.filter(b=>(!from||b.date>=from)&&(!to||b.date<=to)&&(status==="All"||b.status===status));
+  const confirmed=filteredReportBookings.filter(b=>b.status==="Confirmed"),cancelled=filteredReportBookings.filter(b=>b.status==="Cancelled");
+  $("rBuses").textContent=buses.length;$("rBookings").textContent=filteredReportBookings.length;
+  $("rConfirmed").textContent=confirmed.length;$("rCancelled").textContent=cancelled.length;
+  const revenue=confirmed.reduce((sum,b)=>sum+b.total,0);
+  $("rRevenue").textContent=revenue.toLocaleString("en-IN",{style:"currency",currency:"INR",maximumFractionDigits:2});
+  const tbody=$("reportTable");tbody.innerHTML="";
+  if(!filteredReportBookings.length){
+    const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=8;td.textContent="No bookings found for the selected filters.";tr.append(td);tbody.append(tr);
+  }else{
+    filteredReportBookings.forEach(b=>{
+      const tr=document.createElement("tr");
+      [`${b.ref}`,b.name,b.bus,`${b.from} → ${b.to}`,b.date,b.seats.join(", "),`₹${b.total}`,b.status].forEach(value=>{
+        const td=document.createElement("td");td.textContent=value;tr.append(td);
+      });tbody.append(tr);
+    });
+  }
+  $("reportMessage").textContent=`Report generated: ${filteredReportBookings.length} record(s). Revenue counts confirmed bookings only; no payment processing occurs in this demo.`;
+  $("reportMessage").className="message muted";
+}
+function exportReportCSV(){
+  if(!filteredReportBookings.length){alert("No report records to export. Generate a report with matching bookings first.");return;}
+  const headers=["Booking ID","Passenger","Bus","From","To","Travel Date","Seats","Amount","Status"];
+  const rows=filteredReportBookings.map(b=>[b.ref,b.name,b.bus,b.from,b.to,b.date,b.seats.join(" "),b.total,b.status]);
+  const csv=[headers,...rows].map(row=>row.map(value=>'"'+String(value).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="bus_booking_report.csv";document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+function printReport(){
+  showPage("admin");generateReport();window.print();
+}
+renderBuses();renderReviews();renderAdmin();generateReport();
+</script>
+</body>
+</html>
