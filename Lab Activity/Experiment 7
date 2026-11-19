@@ -1,0 +1,384 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electronic Gadgets Shopping</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f6fb;
+    color: #182235;
+}
+
+.wrap {
+    width: 90%;
+    max-width: 1050px;
+    margin: auto;
+}
+
+.hero {
+    background: linear-gradient(125deg, #152a50, #315e8d);
+    color: white;
+    padding: 45px 0;
+}
+
+.hero h1 {
+    font-size: 40px;
+}
+
+.hero p {
+    color: #e0e9f6;
+}
+
+.panel {
+    background: white;
+    padding: 25px;
+    margin: 25px 0;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px #0001;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.features, .items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.feature, .item {
+    border: 1px solid #e1e7f0;
+    padding: 16px;
+    border-radius: 12px;
+    background: #fbfcff;
+}
+
+.feature h3, .item h3 {
+    margin-top: 0;
+}
+
+.feature p, .item p {
+    color: #667085;
+}
+
+.price {
+    font-weight: bold;
+    color: #24558e;
+    margin: 12px 0;
+}
+
+.toolbar {
+    display: flex;
+    gap: 12px;
+    margin: 15px 0;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccd5e2;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+button {
+    background: #235a96;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #174575;
+}
+
+.item button {
+    width: 100%;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+label {
+    font-weight: bold;
+}
+
+label input, label textarea {
+    margin-top: 8px;
+}
+
+.wide {
+    grid-column: 1 / -1;
+}
+
+.muted {
+    color: #69778b;
+}
+
+#message {
+    color: green;
+    font-weight: bold;
+}
+
+footer {
+    padding: 20px 0;
+    color: #69778b;
+}
+
+@media(max-width:600px) {
+    .toolbar, .form-grid {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="hero">
+<div class="wrap">
+    <p>INTERNET PROGRAMMING LAB - EXPERIMENT 09</p>
+    <h1>Electronic Gadgets Shopping</h1>
+    <p>Explore electronic gadgets, search products, manage shopping records and submit details.</p>
+</div>
+</header>
+
+<main class="wrap">
+
+<section class="panel">
+    <h2>Project Modules</h2>
+
+    <div class="features">
+        <article class="feature">
+            <h3>Browse Gadgets</h3>
+            <p>Browse different electronic gadgets.</p>
+        </article>
+
+        <article class="feature">
+            <h3>Search Products</h3>
+            <p>Search for available products.</p>
+        </article>
+
+        <article class="feature">
+            <h3>Shopping Cart</h3>
+            <p>Manage selected shopping items.</p>
+        </article>
+
+        <article class="feature">
+            <h3>Order Tracking</h3>
+            <p>View order-related information.</p>
+        </article>
+    </div>
+</section>
+
+<section class="panel">
+    <h2>Electronic Gadgets</h2>
+
+    <div class="toolbar">
+        <input type="search" id="search"
+        placeholder="Search products...">
+
+        <select id="filter">
+            <option value="">All Modules</option>
+            <option>Browse gadgets</option>
+            <option>Search products</option>
+            <option>Shopping cart</option>
+            <option>Order tracking</option>
+        </select>
+    </div>
+
+    <p id="count" class="muted"></p>
+
+    <div id="items" class="items"></div>
+</section>
+
+<section class="panel">
+    <h2>Submit Details</h2>
+
+    <p class="muted">
+        Enter your details and submit the form.
+    </p>
+
+    <form id="demoForm">
+
+        <div class="form-grid">
+
+            <label>
+                Your Name
+                <input type="text" name="name"
+                placeholder="Enter your name" required>
+            </label>
+
+            <label>
+                Email Address
+                <input type="email" name="email"
+                placeholder="Enter your email" required>
+            </label>
+
+            <label class="wide">
+                Details
+                <textarea name="details" rows="3"
+                placeholder="Enter details"></textarea>
+            </label>
+
+        </div>
+
+        <button type="submit">Submit Details</button>
+
+        <p id="message"></p>
+
+    </form>
+</section>
+
+<footer>
+    Internet Programming Lab - Experiment 09
+</footer>
+
+</main>
+
+<script>
+
+// Product Records
+
+const records = [
+    {
+        name: "Smartphone",
+        category: "Browse gadgets",
+        description: "Latest Android Smartphone",
+        price: 15000
+    },
+    {
+        name: "Laptop",
+        category: "Search products",
+        description: "High performance laptop",
+        price: 45000
+    },
+    {
+        name: "Headphones",
+        category: "Shopping cart",
+        description: "Wireless Bluetooth headphones",
+        price: 2500
+    },
+    {
+        name: "Smart Watch",
+        category: "Order tracking",
+        description: "Smart watch with fitness tracking",
+        price: 3500
+    }
+];
+
+const items = document.getElementById("items");
+const search = document.getElementById("search");
+const filter = document.getElementById("filter");
+
+// Display Products
+
+function render() {
+
+    const q = search.value.toLowerCase();
+    const cat = filter.value;
+
+    const shown = records.filter(product =>
+        (product.name + product.category +
+        product.description).toLowerCase().includes(q)
+        && (!cat || product.category === cat)
+    );
+
+    document.getElementById("count").textContent =
+        shown.length + " product(s) found";
+
+    items.innerHTML = "";
+
+    if (shown.length === 0) {
+        items.innerHTML = "<p>No products found.</p>";
+        return;
+    }
+
+    shown.forEach(product => {
+
+        items.innerHTML += `
+            <article class="item">
+                <h3>${product.name}</h3>
+                <p>${product.category}</p>
+                <p>${product.description}</p>
+                <div class="price">₹${product.price}</div>
+                <button onclick="viewProduct('${product.name}')">
+                    View Details
+                </button>
+            </article>
+        `;
+
+    });
+}
+
+// View Product Details
+
+function viewProduct(name) {
+
+    const product = records.find(p => p.name === name);
+
+    alert(
+        "Product: " + product.name +
+        "\nDescription: " + product.description +
+        "\nPrice: ₹" + product.price
+    );
+
+}
+
+// Search Products
+
+search.addEventListener("input", render);
+
+// Filter Products
+
+filter.addEventListener("change", render);
+
+// Form Submission
+
+document.getElementById("demoForm")
+.addEventListener("submit", function(e) {
+
+    e.preventDefault();
+
+    const data = new FormData(this);
+
+    const name = data.get("name");
+
+    document.getElementById("message").textContent =
+        "Thank you " + name +
+        "! Your details were submitted successfully.";
+
+    this.reset();
+
+});
+
+// Initial Display
+
+render();
+
+</script>
+
+</body>
+</html>
