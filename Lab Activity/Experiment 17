@@ -1,0 +1,600 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoteOnline Dashboard</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --accent: #1d4ed8;
+  --ink: #172033;
+  --muted: #718096;
+}
+
+body {
+  margin: 0;
+  background: #f3f6fb;
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  min-height: 100vh;
+}
+
+aside {
+  width: 250px;
+  background: #10243d;
+  color: #fff;
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  margin-bottom: 45px;
+}
+
+.logo {
+  background: var(--accent);
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.muted {
+  font-size: 12px;
+  color: #9db0c8;
+  letter-spacing: 1.5px;
+  margin: 0 12px 18px;
+}
+
+nav {
+  display: grid;
+  gap: 8px;
+}
+
+nav a {
+  color: #c1cddd;
+  text-decoration: none;
+  padding: 14px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+nav a.active {
+  background: var(--accent);
+  color: white;
+  font-weight: bold;
+}
+
+.user {
+  margin-top: auto;
+  background: #1b3553;
+  padding: 14px;
+  border-radius: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+}
+
+.user small {
+  display: block;
+  color: #b8c7d9;
+  margin-top: 4px;
+}
+
+main {
+  flex: 1;
+  min-width: 0;
+  padding: 0 36px 22px;
+}
+
+header {
+  height: 82px;
+  background: white;
+  margin: 0 -36px;
+  padding: 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e4eaf2;
+}
+
+header h2 {
+  font-size: 23px;
+  margin: 0;
+}
+
+header p {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 5px 0 0;
+}
+
+.header-right {
+  display: flex;
+  gap: 12px;
+}
+
+input {
+  border: 1px solid #e1e7ef;
+  border-radius: 10px;
+  padding: 12px 15px;
+}
+
+button {
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 9px;
+  padding: 11px 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.profile {
+  padding: 12px 18px;
+}
+
+.welcome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0;
+}
+
+.welcome h1 {
+  font-size: 30px;
+  margin: 0 0 10px;
+}
+
+.welcome p,
+.section-title p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.date {
+  background: white;
+  padding: 16px 20px;
+  border: 1px solid #e5eaf1;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.stat {
+  background: white;
+  padding: 22px;
+  border: 1px solid #e5eaf1;
+  border-radius: 16px;
+  min-height: 120px;
+}
+
+.stat span {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.stat strong {
+  display: block;
+  font-size: 32px;
+  margin: 12px 0;
+}
+
+.stat small {
+  color: #169b65;
+}
+
+.hero {
+  margin-top: 25px;
+  min-height: 190px;
+  border-radius: 20px;
+  background: linear-gradient(115deg, #1d4ed8, #4b72a7);
+  padding: 30px 38px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.hero h2 {
+  font-size: 30px;
+  margin: 6px 0 10px;
+}
+
+.hero p {
+  margin: 0 0 20px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 2px;
+  opacity: .8;
+}
+
+.light {
+  background: white;
+  color: var(--accent);
+}
+
+.hero-art {
+  position: absolute;
+  right: 8%;
+  top: 0;
+  width: 32%;
+  height: 100%;
+}
+
+.orb {
+  position: absolute;
+  background: #ffffff35;
+  border: 1px solid #ffffff60;
+  border-radius: 50%;
+}
+
+.one {
+  width: 170px;
+  height: 170px;
+  right: 40px;
+  top: 10px;
+}
+
+.two {
+  width: 130px;
+  height: 130px;
+  right: 145px;
+  top: 42px;
+}
+
+.three {
+  width: 100px;
+  height: 100px;
+  right: 0;
+  top: 62px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 28px 0 18px;
+}
+
+.section-title h2 {
+  margin: 0 0 7px;
+  font-size: 22px;
+}
+
+.outline {
+  background: white;
+  color: var(--accent);
+  border: 1px solid #dce4ef;
+}
+
+.items {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.item {
+  background: white;
+  border: 1px solid #e5eaf1;
+  border-radius: 16px;
+  padding: 14px;
+  min-width: 0;
+}
+
+.thumb {
+  height: 125px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e7edf9, #dbe9ee);
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.item h3 {
+  font-size: 16px;
+  margin: 18px 0 8px;
+}
+
+.item p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+
+.item button {
+  width: 100%;
+  font-size: 12px;
+}
+
+footer {
+  color: #8a96a6;
+  font-size: 12px;
+  padding: 20px 0 0;
+}
+
+@media(max-width: 1050px) {
+  aside {
+    width: 210px;
+  }
+
+  .stats,
+  .items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  main {
+    padding: 0 20px;
+  }
+
+  header {
+    margin: 0 -20px;
+    padding: 0 20px;
+  }
+}
+
+@media(max-width: 650px) {
+  body {
+    display: block;
+  }
+
+  aside {
+    width: 100%;
+    min-height: auto;
+  }
+
+  nav {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .user {
+    margin-top: 20px;
+  }
+
+  main {
+    padding: 0 14px;
+  }
+
+  header {
+    margin: 0 -14px;
+    padding: 0 14px;
+  }
+
+  .welcome {
+    display: block;
+  }
+
+  .date {
+    display: inline-block;
+    margin-top: 16px;
+  }
+
+  .stats,
+  .items {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .header-right input {
+    display: none;
+  }
+
+  .hero-art {
+    opacity: .3;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<aside>
+  <div class="brand">
+    <span class="logo">◆</span>
+    <b>VoteOnline</b>
+  </div>
+
+  <p class="muted">WORKSPACE</p>
+
+  <nav>
+    <a class="active" href="#">▦ &nbsp; Dashboard</a>
+    <a href="#">⌕ &nbsp; Browse / Search</a>
+    <a href="#">▣ &nbsp; Bookings / Orders</a>
+    <a href="#">◷ &nbsp; Activity</a>
+    <a href="#">● &nbsp; Profile</a>
+    <a href="#">⚙ &nbsp; Settings</a>
+  </nav>
+
+  <div class="user">
+    <div class="avatar">U</div>
+    <div>
+      <b>Demo User</b>
+      <small>Standard account</small>
+    </div>
+  </div>
+</aside>
+
+<main>
+
+<header>
+  <div>
+    <h2>Dashboard</h2>
+    <p>VoteOnline / Overview</p>
+  </div>
+
+  <div class="header-right">
+    <input id="searchInput" placeholder="Search...">
+    <button class="profile" onclick="showMessage('Profile')">Profile</button>
+  </div>
+</header>
+
+<section class="welcome">
+  <div>
+    <h1>Welcome back!</h1>
+    <p>Secure E-Voting — manage everything in one place.</p>
+  </div>
+  <span class="date">Today · Overview</span>
+</section>
+
+<section class="stats">
+
+  <div class="stat">
+    <span>Registered Voters</span>
+    <strong>250</strong>
+    <small>↑ 12% this month</small>
+  </div>
+
+  <div class="stat">
+    <span>Candidates</span>
+    <strong>184</strong>
+    <small>↑ 12% this month</small>
+  </div>
+
+  <div class="stat">
+    <span>Votes Cast</span>
+    <strong>32</strong>
+    <small>↑ 12% this month</small>
+  </div>
+
+  <div class="stat">
+    <span>Wards</span>
+    <strong>12</strong>
+    <small>↑ 12% this month</small>
+  </div>
+
+</section>
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">YOUR WORKSPACE</p>
+    <h2>VoteOnline</h2>
+    <p>Secure E-Voting</p>
+    <button class="light" onclick="showMessage('Explore')">
+      Explore now →
+    </button>
+  </div>
+
+  <div class="hero-art">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+    <div class="orb three"></div>
+  </div>
+</section>
+
+<section class="section-title">
+  <div>
+    <h2>Featured</h2>
+    <p>Popular options selected for you</p>
+  </div>
+
+  <button class="outline" onclick="showMessage('Showing all items')">
+    View all →
+  </button>
+</section>
+
+<section class="items" id="items">
+
+  <article class="item">
+    <div class="thumb">01</div>
+    <h3>Candidate A</h3>
+    <p>Voter Login · Recommended</p>
+    <button onclick="showMessage('Candidate A')">View details</button>
+  </article>
+
+  <article class="item">
+    <div class="thumb">02</div>
+    <h3>Candidate B</h3>
+    <p>Cast Vote · Recommended</p>
+    <button onclick="showMessage('Candidate B')">View details</button>
+  </article>
+
+  <article class="item">
+    <div class="thumb">03</div>
+    <h3>Candidate C</h3>
+    <p>Results · Recommended</p>
+    <button onclick="showMessage('Candidate C')">View details</button>
+  </article>
+
+  <article class="item">
+    <div class="thumb">04</div>
+    <h3>Election Details</h3>
+    <p>Voter Login · Recommended</p>
+    <button onclick="showMessage('Election Details')">View details</button>
+  </article>
+
+</section>
+
+<footer>
+  Dashboard preview · Experiment 17 · Full-screen layout
+</footer>
+
+</main>
+
+<script>
+function showMessage(message) {
+  alert(message + " — demo interaction");
+}
+
+// Sidebar active menu
+document.querySelectorAll("nav a").forEach(link => {
+  link.addEventListener("click", event => {
+    event.preventDefault();
+
+    document.querySelectorAll("nav a").forEach(item => {
+      item.classList.remove("active");
+    });
+
+    link.classList.add("active");
+  });
+});
+
+// Search featured items
+document.getElementById("searchInput").addEventListener("input", function() {
+  const searchValue = this.value.toLowerCase();
+  const items = document.querySelectorAll(".item");
+
+  items.forEach(item => {
+    const itemText = item.innerText.toLowerCase();
+    item.style.display = itemText.includes(searchValue) ? "" : "none";
+  });
+});
+</script>
+
+</body>
+</html>
