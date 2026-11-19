@@ -1,0 +1,505 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fashion E-commerce - StyleHub</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #182235;
+    background: #f3f6fb;
+}
+
+body {
+    margin: 0;
+    line-height: 1.55;
+}
+
+.wrap {
+    width: 92%;
+    max-width: 1050px;
+    margin: auto;
+}
+
+.hero {
+    background: linear-gradient(125deg, #152a50, #315e8d);
+    color: white;
+    padding: 48px 0 54px;
+}
+
+.hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    margin: 8px 0 14px;
+}
+
+.hero p {
+    color: #e0e9f6;
+}
+
+.eyebrow {
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    color: #6586b6;
+}
+
+.hero .eyebrow {
+    color: #b9d6ff;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #e1e7f0;
+    border-radius: 18px;
+    padding: 26px;
+    margin: 24px 0;
+    box-shadow: 0 8px 28px #20385b0a;
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+h2 {
+    font-size: 1.45rem;
+    margin: 0 0 16px;
+}
+
+.pill {
+    background: #eaf2ff;
+    color: #24558e;
+    padding: 6px 11px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.features, .items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.feature {
+    display: flex;
+    gap: 12px;
+    padding: 15px;
+    border: 1px solid #e7edf5;
+    border-radius: 12px;
+    background: #fbfcff;
+}
+
+.feature h3 {
+    margin: 0 0 5px;
+}
+
+.feature p {
+    font-size: 14px;
+    color: #647086;
+    margin: 0;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background: #3b82c4;
+    border-radius: 50%;
+    margin-top: 7px;
+    flex-shrink: 0;
+}
+
+.toolbar {
+    display: flex;
+    gap: 12px;
+    margin: 12px 0 18px;
+}
+
+input, select, textarea {
+    width: 100%;
+    font: inherit;
+    border: 1px solid #ccd5e2;
+    border-radius: 9px;
+    padding: 11px 12px;
+    background: white;
+}
+
+select {
+    max-width: 280px;
+}
+
+.item {
+    border: 1px solid #e3e9f1;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.item h3 {
+    margin: 0 0 5px;
+}
+
+.item p {
+    margin: 4px 0;
+    color: #667085;
+    font-size: 14px;
+}
+
+.price {
+    font-weight: bold;
+    color: #24558e;
+    margin: 10px 0;
+}
+
+button {
+    border: none;
+    border-radius: 9px;
+    background: #235a96;
+    color: white;
+    padding: 11px 15px;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #174575;
+}
+
+.item button {
+    width: 100%;
+}
+
+.muted {
+    color: #69778b;
+    font-size: 14px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 16px 0;
+}
+
+.form-grid label {
+    font-weight: 650;
+    font-size: 14px;
+}
+
+.form-grid input, .form-grid textarea {
+    display: block;
+    margin-top: 6px;
+}
+
+.wide {
+    grid-column: 1 / -1;
+}
+
+#message {
+    color: #16734b;
+    font-weight: bold;
+}
+
+footer {
+    padding: 10px 0 35px;
+    color: #69778b;
+    font-size: 14px;
+}
+
+@media(max-width:600px) {
+    .toolbar, .section-head {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    select {
+        max-width: none;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wide {
+        grid-column: auto;
+    }
+
+    .panel {
+        padding: 19px;
+    }
+
+    .hero {
+        padding: 35px 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="hero">
+<div class="wrap">
+    <p class="eyebrow">INTERNET PROGRAMMING LAB · EXPERIMENT 10</p>
+    <h1>Fashion E-commerce (StyleHub)</h1>
+    <p>Explore fashion products, search items, manage shopping records and track orders.</p>
+</div>
+</header>
+
+<main class="wrap">
+
+<!-- Project Modules -->
+<section class="panel">
+
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">PROJECT MODULES</p>
+            <h2>What this experiment includes</h2>
+        </div>
+        <span class="pill">Frontend Demo</span>
+    </div>
+
+    <div class="features">
+
+        <article class="feature">
+            <span class="dot"></span>
+            <div>
+                <h3>Browse Fashion</h3>
+                <p>Browse different fashion products.</p>
+            </div>
+        </article>
+
+        <article class="feature">
+            <span class="dot"></span>
+            <div>
+                <h3>Search and Filter</h3>
+                <p>Search and filter fashion products.</p>
+            </div>
+        </article>
+
+        <article class="feature">
+            <span class="dot"></span>
+            <div>
+                <h3>Shopping Cart</h3>
+                <p>Manage selected shopping items.</p>
+            </div>
+        </article>
+
+        <article class="feature">
+            <span class="dot"></span>
+            <div>
+                <h3>Order Tracking</h3>
+                <p>View order-related information.</p>
+            </div>
+        </article>
+
+    </div>
+</section>
+
+<!-- Product Records -->
+<section class="panel">
+
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">TRY IT</p>
+            <h2>Fashion Products</h2>
+        </div>
+        <span id="count" class="muted"></span>
+    </div>
+
+    <div class="toolbar">
+
+        <input id="search" type="search"
+        placeholder="Search fashion products..."
+        aria-label="Search records">
+
+        <select id="filter" aria-label="Filter category">
+            <option value="">All Modules</option>
+            <option>Browse fashion</option>
+            <option>Search and filter</option>
+            <option>Shopping cart</option>
+            <option>Order tracking</option>
+        </select>
+
+    </div>
+
+    <div id="items" class="items"></div>
+
+</section>
+
+<!-- Demo Form -->
+<section class="panel">
+
+    <p class="eyebrow">DEMO FORM</p>
+    <h2>Submit Details</h2>
+
+    <p class="muted">
+        Enter your details and submit the form.
+    </p>
+
+    <form id="demoForm">
+
+        <div class="form-grid">
+
+            <label>
+                Your Name
+                <input name="name" required
+                placeholder="Enter your name">
+            </label>
+
+            <label>
+                Email Address
+                <input name="email" type="email" required
+                placeholder="you@example.com">
+            </label>
+
+            <label class="wide">
+                Details
+                <textarea name="details" rows="3"
+                placeholder="Enter relevant details"></textarea>
+            </label>
+
+        </div>
+
+        <button type="submit">Submit Demo Form</button>
+
+        <p id="message" role="status"></p>
+
+    </form>
+
+</section>
+
+<footer>
+    Experiment 10 · Fashion E-commerce (StyleHub)
+</footer>
+
+</main>
+
+<script>
+
+// Fashion Product Records
+
+const records = [
+    {
+        name: "Men's Casual Shirt",
+        category: "Browse fashion",
+        description: "Comfortable cotton casual shirt.",
+        price: 799
+    },
+    {
+        name: "Women's Designer Dress",
+        category: "Search and filter",
+        description: "Stylish designer party wear dress.",
+        price: 1499
+    },
+    {
+        name: "Sports Shoes",
+        category: "Shopping cart",
+        description: "Comfortable running and sports shoes.",
+        price: 1999
+    },
+    {
+        name: "Denim Jeans",
+        category: "Order tracking",
+        description: "Premium quality denim jeans.",
+        price: 1199
+    }
+];
+
+const items = document.querySelector("#items");
+const search = document.querySelector("#search");
+const filter = document.querySelector("#filter");
+
+// Display Products
+
+function render() {
+
+    const q = search.value.trim().toLowerCase();
+    const cat = filter.value;
+
+    const shown = records.filter(x =>
+        (x.name + " " + x.category + " " + x.description)
+        .toLowerCase().includes(q) &&
+        (!cat || x.category === cat)
+    );
+
+    document.querySelector("#count").textContent =
+        shown.length + " record(s)";
+
+    items.innerHTML = shown.length
+        ? shown.map(x => `
+            <article class="item">
+                <h3>${x.name}</h3>
+                <p>${x.category}</p>
+                <p>${x.description}</p>
+                <div class="price">₹${x.price.toFixed(2)}</div>
+                <button type="button" data-name="${x.name}">
+                    View Details
+                </button>
+            </article>
+        `).join("")
+        : '<p class="muted">No matching records. Try another search.</p>';
+}
+
+// Search Products
+
+search.addEventListener("input", render);
+
+// Filter Products
+
+filter.addEventListener("change", render);
+
+// View Product Details
+
+items.addEventListener("click", e => {
+
+    const b = e.target.closest("button[data-name]");
+
+    if (b) {
+        const product = records.find(
+            x => x.name === b.dataset.name
+        );
+
+        alert(
+            "Product: " + product.name +
+            "\nCategory: " + product.category +
+            "\nDescription: " + product.description +
+            "\nPrice: ₹" + product.price
+        );
+    }
+
+});
+
+// Form Submission
+
+document.querySelector("#demoForm")
+.addEventListener("submit", e => {
+
+    e.preventDefault();
+
+    const data = new FormData(e.currentTarget);
+
+    document.querySelector("#message").textContent =
+        "Thanks, " + data.get("name") +
+        ". Demo form validated successfully!";
+
+    e.currentTarget.reset();
+
+});
+
+// Initial Display
+
+render();
+
+</script>
+
+</body>
+</html>
