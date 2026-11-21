@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>KodaikanalEats</title>
+<style>
+body{font-family:Arial;background:#f1f7f3;margin:0}
+header{background:#176b50;color:white;text-align:center;padding:25px}
+nav{background:#104b38;padding:15px;text-align:center}
+nav a{color:white;text-decoration:none;margin:15px}
+.container{background:white;width:85%;margin:20px auto;padding:20px;border-radius:10px}
+input,select,button{padding:10px;margin:7px;border:1px solid #ccc;border-radius:5px}
+button{background:#16835c;color:white;border:0;cursor:pointer}
+.card{background:#e7f5ec;padding:15px;margin:10px;border-radius:8px}
+</style>
+</head>
+<body>
+<header><h1>KodaikanalEats</h1><p>Discover and Book the Best Restaurants</p></header>
+<nav>
+<a href="#home">Home</a><a href="#restaurants">Restaurants</a>
+<a href="#booking">Booking</a><a href="#admin">Admin</a>
+</nav>
+
+<div class="container" id="home">
+<h2>Welcome to KodaikanalEats</h2>
+<p>Find restaurants, explore menus and reserve your table online.</p>
+</div>
+
+<div class="container" id="restaurants">
+<h2>Restaurant Search and Filter</h2>
+<input id="search" placeholder="Search restaurant" oninput="displayRestaurants()">
+<select id="cuisine" onchange="displayRestaurants()">
+<option value="">All Cuisines</option>
+<option>Indian</option><option>Chinese</option><option>Italian</option>
+</select>
+<select id="rating" onchange="displayRestaurants()">
+<option value="">All Ratings</option><option value="4">4 and above</option>
+</select>
+<div id="restaurantList"></div>
+</div>
+
+<div class="container" id="booking">
+<h2>Online Table Booking</h2>
+<input id="customer" placeholder="Customer Name">
+<input id="phone" placeholder="Phone Number">
+<input id="date" type="date">
+<input id="time" type="time">
+<input id="guests" type="number" placeholder="Number of Guests">
+<select id="room">
+<option>Single Room</option>
+<option>Double Room</option>
+<option>Deluxe Room</option>
+</select>
+<button onclick="bookTable()">Book Table</button>
+<p id="bookingMsg"></p>
+</div>
+
+<div class="container">
+<h2>Special Offers</h2>
+<p>10% discount on selected restaurant reservations.</p>
+</div>
+
+<div class="container" id="admin">
+<h2>Admin Login</h2>
+<input id="adminUser" placeholder="Username">
+<input id="adminPass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<p id="loginMsg"></p>
+<h2>Manage Restaurants</h2>
+<input id="newName" placeholder="Restaurant Name">
+<select id="newCuisine">
+<option>Indian</option><option>Chinese</option><option>Italian</option>
+</select>
+<input id="newRating" type="number" min="1" max="5" placeholder="Rating">
+<button onclick="addRestaurant()">Add Restaurant</button>
+<h3>Booking Details</h3>
+<div id="bookingList"></div>
+</div>
+
+<script>
+let restaurants=[
+{name:"Hilltop Restaurant",cuisine:"Indian",rating:5},
+{name:"Green Valley Cafe",cuisine:"Chinese",rating:4},
+{name:"Italian Corner",cuisine:"Italian",rating:4}
+];
+let bookings=[];
+
+function displayRestaurants(){
+let s=search.value.toLowerCase();
+let c=cuisine.value;
+let r=Number(rating.value);
+let result=restaurants.filter(x=>
+x.name.toLowerCase().includes(s)&&
+(!c||x.cuisine===c)&&(!r||x.rating>=r));
+restaurantList.innerHTML="";
+result.forEach(x=>{
+restaurantList.innerHTML+=`<div class="card">
+<h3>${x.name}</h3><p>Cuisine: ${x.cuisine}</p>
+<p>Rating: ${x.rating}/5</p>
+</div>`;
+});
+}
+function bookTable(){
+if(!customer.value||!date.value||!time.value||Number(guests.value)<=0){
+alert("Enter all booking details");return;
+}
+bookings.push({name:customer.value,date:date.value,time:time.value,guests:guests.value});
+bookingMsg.innerText="Table booked successfully!";
+bookingList.innerHTML=bookings.map(b=>
+`<div class="card">${b.name} - ${b.date} - ${b.time} - ${b.guests} Guests</div>`).join("");
+}
+function login(){
+loginMsg.innerText=adminUser.value==="admin"&&adminPass.value==="1234"?"Admin Login Successful":"Invalid Login";
+}
+function addRestaurant(){
+if(!newName.value||Number(newRating.value)<1||Number(newRating.value)>5){
+alert("Enter valid restaurant details");return;
+}
+restaurants.push({name:newName.value,cuisine:newCuisine.value,rating:Number(newRating.value)});
+displayRestaurants();
+}
+displayRestaurants();
+</script>
+</body>
+</html>
