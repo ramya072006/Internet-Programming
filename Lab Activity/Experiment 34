@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>LearnWell Tuition Centre</title>
+<style>
+body{font-family:Arial;background:#f1f5ff;margin:0}
+header{background:#3730a3;color:white;text-align:center;padding:25px}
+nav{background:#25216e;padding:15px;text-align:center}
+nav a{color:white;text-decoration:none;margin:12px}
+.container{background:white;width:85%;margin:20px auto;padding:20px;border-radius:10px}
+input,select,textarea,button{padding:10px;margin:7px;border:1px solid #ccc;border-radius:5px}
+button{background:#4f46e5;color:white;border:0;cursor:pointer}
+.card{background:#ecebff;padding:15px;margin:10px;border-radius:8px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>LearnWell Tuition Centre</h1>
+<p>Learn Today, Succeed Tomorrow</p>
+</header>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#courses">Courses</a>
+<a href="#students">Students</a>
+<a href="#teachers">Teachers</a>
+<a href="#admin">Admin</a>
+</nav>
+
+<div class="container" id="home">
+<h2>Welcome to LearnWell</h2>
+<p>We provide quality online and offline tuition classes for students.</p>
+</div>
+
+<div class="container">
+<h2>Announcements</h2>
+<div id="announcements">
+<p>Admissions are now open!</p>
+<p>Monthly tests will be conducted regularly.</p>
+</div>
+</div>
+
+<div class="container" id="courses">
+<h2>Course Offerings</h2>
+<div class="card"><h3>Mathematics</h3><p>Duration: 3 Months | Fees: Rs.2000</p></div>
+<div class="card"><h3>Physics</h3><p>Duration: 3 Months | Fees: Rs.2500</p></div>
+<div class="card"><h3>Computer Science</h3><p>Duration: 4 Months | Fees: Rs.3000</p></div>
+</div>
+
+<div class="container" id="students">
+<h2>Student Registration</h2>
+<input id="studentName" placeholder="Student Name">
+<input id="studentEmail" placeholder="Email">
+<select id="subject">
+<option>Mathematics</option>
+<option>Physics</option>
+<option>Computer Science</option>
+</select>
+<select id="mode">
+<option>Online</option>
+<option>Offline</option>
+</select>
+<button onclick="registerStudent()">Register Student</button>
+<p id="studentMsg"></p>
+
+<h2>Fees Payment</h2>
+<input id="studentFee" type="number" placeholder="Enter Fees Paid">
+<button onclick="payFees()">Submit Fees</button>
+<p id="feeMsg"></p>
+
+<h2>Student Reports</h2>
+<div id="studentReports"></div>
+</div>
+
+<div class="container" id="teachers">
+<h2>Teacher Registration</h2>
+<input id="teacherName" placeholder="Teacher Name">
+<input id="teacherEmail" placeholder="Email">
+<input id="qualification" placeholder="Qualification">
+<button onclick="registerTeacher()">Register Teacher</button>
+<p id="teacherMsg"></p>
+
+<h2>Teacher Login</h2>
+<input id="teacherLogin" placeholder="Teacher Email">
+<button onclick="teacherLoginCheck()">Login</button>
+<p id="teacherLoginMsg"></p>
+</div>
+
+<div class="container" id="admin">
+<h2>Admin Login</h2>
+<input id="adminUser" placeholder="Username">
+<input id="adminPass" type="password" placeholder="Password">
+<button onclick="adminLogin()">Login</button>
+<p id="adminMsg"></p>
+
+<h2>Post Announcement</h2>
+<input id="announcement" placeholder="Announcement Details">
+<button onclick="postAnnouncement()">Post</button>
+
+<h2>Maintenance Requests</h2>
+<input id="requestName" placeholder="Student Name">
+<textarea id="request" placeholder="Enter Maintenance Request"></textarea>
+<button onclick="submitRequest()">Submit Request</button>
+<div id="requestList"></div>
+
+<h2>Feedback</h2>
+<input id="feedback" placeholder="Enter Feedback">
+<button onclick="sendFeedback()">Submit Feedback</button>
+<div id="feedbackList"></div>
+</div>
+
+<div class="container">
+<h2>Contact Us</h2>
+<p>Email: learnwell@gmail.com</p>
+<p>Phone: 9876543210</p>
+</div>
+
+<script>
+let students=[];
+let teachers=[];
+let requests=[];
+let feedbacks=[];
+
+function registerStudent(){
+if(!studentName.value||!studentEmail.value){
+alert("Enter student details");return;
+}
+students.push({
+name:studentName.value,
+email:studentEmail.value,
+subject:subject.value,
+mode:mode.value,
+fees:0
+});
+studentMsg.innerText="Student registered successfully!";
+displayStudents();
+}
+
+function payFees(){
+let amount=Number(studentFee.value);
+if(students.length===0||amount<=0){
+alert("Register a student and enter valid fees");return;
+}
+students[students.length-1].fees+=amount;
+feeMsg.innerText="Fees paid successfully!";
+displayStudents();
+}
+
+function displayStudents(){
+studentReports.innerHTML="";
+students.forEach(s=>{
+studentReports.innerHTML+=`<div class="card">
+Name: ${s.name}<br>
+Subject: ${s.subject}<br>
+Mode: ${s.mode}<br>
+Fees Paid: Rs.${s.fees}
+</div>`;
+});
+}
+
+function registerTeacher(){
+if(!teacherName.value||!teacherEmail.value||!qualification.value){
+alert("Enter all teacher details");return;
+}
+teachers.push({name:teacherName.value,email:teacherEmail.value});
+teacherMsg.innerText="Teacher registered successfully!";
+}
+
+function teacherLoginCheck(){
+let found=teachers.find(t=>t.email===teacherLogin.value);
+teacherLoginMsg.innerText=found?"Teacher Login Successful":"Teacher Not Found";
+}
+
+function adminLogin(){
+adminMsg.innerText=adminUser.value==="admin"&&adminPass.value==="1234"?"Admin Login Successful":"Invalid Login";
+}
+
+function postAnnouncement(){
+if(!announcement.value){alert("Enter announcement");return;}
+announcements.innerHTML+="<p>"+announcement.value+"</p>";
+announcement.value="";
+}
+
+function submitRequest(){
+if(!requestName.value||!request.value){
+alert("Enter request details");return;
+}
+requests.push(requestName.value+": "+request.value);
+requestList.innerHTML=requests.map(r=>"<div class='card'>"+r+"</div>").join("");
+}
+
+function sendFeedback(){
+if(!feedback.value){alert("Enter feedback");return;}
+feedbacks.push(feedback.value);
+feedbackList.innerHTML=feedbacks.map(f=>"<p>"+f+"</p>").join("");
+feedback.value="";
+}
+</script>
+</body>
+</html>
