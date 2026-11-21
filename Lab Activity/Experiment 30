@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>IJSSE Journal Website</title>
+<style>
+body{font-family:Arial;margin:0;background:#f3f6fa;color:#333}
+header{background:#17365d;color:white;text-align:center;padding:25px}
+nav{background:#102744;padding:13px;text-align:center}
+nav a{color:white;text-decoration:none;margin:10px;display:inline-block}
+.container{background:white;margin:20px auto;padding:20px;width:88%;border-radius:8px}
+input,select,textarea,button{padding:10px;margin:7px;border:1px solid #ccc;border-radius:5px}
+button{background:#205493;color:white;border:0;cursor:pointer}
+h2{color:#17365d}
+.card{background:#eaf1fa;padding:12px;margin:10px;border-radius:6px}
+</style>
+</head>
+<body>
+<header>
+<h1>International Journal of Scientific and Social Excellence</h1>
+<p>IJSSE | Print ISSN: 2395-1443 | Online ISSN: 2395-1451</p>
+</header>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#about">About Journal</a>
+<a href="#ethics">Ethics</a>
+<a href="#editors">Editors</a>
+<a href="#reviewers">Reviewers</a>
+<a href="#authors">Authors</a>
+<a href="#articles">Articles</a>
+<a href="#contact">Contact</a>
+</nav>
+
+<div class="container" id="home">
+<h2>Welcome to IJSSE</h2>
+<p>International Journal of Scientific and Social Excellence provides a platform for researchers and scholars to publish scientific and social research articles.</p>
+<h3>Latest Publication</h3>
+<p>Explore our latest research papers and academic publications.</p>
+</div>
+
+<div class="container" id="about">
+<h2>About Journal</h2>
+<p><b>Journal Name:</b> International Journal of Scientific and Social Excellence</p>
+<p><b>Print ISSN:</b> 2395-1443</p>
+<p><b>Online ISSN:</b> 2395-1451</p>
+<p><b>Scope:</b> Science, Engineering, Technology and Social Research.</p>
+</div>
+
+<div class="container" id="ethics">
+<h2>Publication Ethics</h2>
+<ul>
+<li>Research must be original.</li>
+<li>Plagiarism is not permitted.</li>
+<li>Authors must provide accurate information.</li>
+<li>Reviewers must maintain confidentiality.</li>
+<li>Editors must ensure fair publication decisions.</li>
+</ul>
+</div>
+
+<div class="container" id="editors">
+<h2>Editor Registration / Login</h2>
+<input id="editorName" placeholder="Editor Name">
+<input id="editorEmail" placeholder="Email">
+<input id="editorPass" type="password" placeholder="Password">
+<button onclick="editorRegister()">Editor Register</button>
+<button onclick="editorLogin()">Editor Login</button>
+<p id="editorMsg"></p>
+<h3>Editorial Committee</h3>
+<p>Editor-in-Chief | Associate Editor | Assistant Editor</p>
+<p>Responsibilities: Manuscript management, reviewer coordination and publication decisions.</p>
+</div>
+
+<div class="container" id="reviewers">
+<h2>Reviewer Registration / Login</h2>
+<input id="reviewerName" placeholder="Reviewer Name">
+<input id="reviewerEmail" placeholder="Email">
+<input id="reviewerPass" type="password" placeholder="Password">
+<button onclick="reviewerRegister()">Register Reviewer</button>
+<button onclick="reviewerLogin()">Reviewer Login</button>
+<p id="reviewerMsg"></p>
+<h3>Reviewer Resources</h3>
+<p>Review submitted articles and provide feedback.</p>
+</div>
+
+<div class="container" id="authors">
+<h2>Author Registration / Login</h2>
+<input id="authorName" placeholder="Author Name">
+<input id="authorEmail" placeholder="Email">
+<input id="authorPass" type="password" placeholder="Password">
+<button onclick="authorRegister()">Register Author</button>
+<button onclick="authorLogin()">Author Login</button>
+<p id="authorMsg"></p>
+
+<h3>Author Instructions</h3>
+<p>Submit original manuscripts following the journal guidelines.</p>
+<h3>Publication Charge</h3>
+<p>Refer to the journal's official publication charge policy.</p>
+<h3>Article Template</h3>
+<button onclick="alert('Article template section selected')">View Article Template</button>
+<h3>Copyright Form</h3>
+<button onclick="alert('Copyright form section selected')">View Copyright Form</button>
+</div>
+
+<div class="container">
+<h2>Submit Manuscript</h2>
+<input id="paperTitle" placeholder="Paper Title">
+<input id="paperAuthor" placeholder="Author Name">
+<input id="paperFile" type="file" accept=".pdf,.doc,.docx">
+<button onclick="submitPaper()">Submit Manuscript</button>
+<p id="paperMsg"></p>
+<h3>Submitted Papers</h3>
+<div id="paperList"></div>
+</div>
+
+<div class="container" id="articles">
+<h2>Articles and Publications</h2>
+<h3>Current Issue</h3>
+<p>Latest published research papers.</p>
+<h3>Archive</h3>
+<p>Previous journal issues.</p>
+<h3>Most Viewed Articles</h3>
+<p>Popular research publications.</p>
+<h3>Most Cited Articles</h3>
+<p>Frequently cited academic papers.</p>
+<h3>About to Print Articles</h3>
+<p>Accepted papers awaiting publication.</p>
+</div>
+
+<div class="container">
+<h2>Call for Papers</h2>
+<p>Researchers are invited to submit original manuscripts.</p>
+<input id="newsletter" type="email" placeholder="Subscribe with Email">
+<button onclick="subscribe()">Subscribe Newsletter</button>
+<p id="subMsg"></p>
+</div>
+
+<div class="container" id="contact">
+<h2>Contact Us</h2>
+<input id="contactName" placeholder="Your Name">
+<input id="contactEmail" placeholder="Your Email">
+<textarea id="contactMessage" placeholder="Your Message"></textarea>
+<button onclick="contactUs()">Send Message</button>
+<p id="contactMsg"></p>
+</div>
+
+<script>
+let editors=[];
+let reviewers=[];
+let authors=[];
+let papers=[];
+
+function editorRegister(){
+if(!editorName.value||!editorEmail.value||!editorPass.value){
+alert("Fill all details");return;
+}
+editors.push({email:editorEmail.value,password:editorPass.value});
+editorMsg.innerText="Editor registration successful!";
+}
+
+function editorLogin(){
+let found=editors.find(x=>x.email===editorEmail.value&&x.password===editorPass.value);
+editorMsg.innerText=found?"Editor Login Successful":"Invalid Login";
+}
+
+function reviewerRegister(){
+if(!reviewerName.value||!reviewerEmail.value||!reviewerPass.value){
+alert("Fill all details");return;
+}
+reviewers.push({email:reviewerEmail.value,password:reviewerPass.value});
+reviewerMsg.innerText="Reviewer registered successfully!";
+}
+
+function reviewerLogin(){
+let found=reviewers.find(x=>x.email===reviewerEmail.value&&x.password===reviewerPass.value);
+reviewerMsg.innerText=found?"Reviewer Login Successful":"Invalid Login";
+}
+
+function authorRegister(){
+if(!authorName.value||!authorEmail.value||!authorPass.value){
+alert("Fill all details");return;
+}
+authors.push({email:authorEmail.value,password:authorPass.value});
+authorMsg.innerText="Author registered successfully!";
+}
+
+function authorLogin(){
+let found=authors.find(x=>x.email===authorEmail.value&&x.password===authorPass.value);
+authorMsg.innerText=found?"Author Login Successful":"Invalid Login";
+}
+
+function submitPaper(){
+if(!paperTitle.value||!paperAuthor.value||!paperFile.files.length){
+alert("Enter paper details and select a file");return;
+}
+papers.push({
+title:paperTitle.value,
+author:paperAuthor.value,
+file:paperFile.files[0].name,
+status:"Submitted"
+});
+paperMsg.innerText="Manuscript submitted successfully!";
+paperList.innerHTML="";
+papers.forEach(p=>{
+paperList.innerHTML+=`<div class="card">
+Title: ${p.title}<br>
+Author: ${p.author}<br>
+File: ${p.file}<br>
+Status: ${p.status}
+</div>`;
+});
+}
+
+function subscribe(){
+if(!newsletter.value){alert("Enter email");return;}
+subMsg.innerText="Subscribed successfully!";
+}
+
+function contactUs(){
+if(!contactName.value||!contactEmail.value||!contactMessage.value){
+alert("Fill all contact details");return;
+}
+contactMsg.innerText="Your message has been submitted!";
+}
+</script>
+</body>
+</html>
