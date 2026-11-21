@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Traffic Squad Management</title>
+<style>
+body{font-family:Arial;background:#eef2f7;margin:0}
+header{background:#172554;color:white;text-align:center;padding:20px}
+.container{background:white;margin:20px auto;padding:20px;width:85%;border-radius:10px}
+input,select,button{padding:10px;margin:7px;border:1px solid #ccc;border-radius:5px}
+button{background:#1d4ed8;color:white;border:0;cursor:pointer}
+.card{background:#eaf1ff;padding:12px;margin:10px;border-radius:7px}
+</style>
+</head>
+<body>
+<header><h1>Traffic Squad - FIR & Challan Management</h1></header>
+
+<div class="container">
+<h2>User Registration</h2>
+<input id="username" placeholder="Vehicle Owner Name">
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="register()">Register</button>
+<p id="regMsg"></p>
+</div>
+
+<div class="container">
+<h2>User Dashboard</h2>
+<input id="vehicle" placeholder="Vehicle Number">
+<button onclick="viewChallan()">View Challan</button>
+<div id="challanResult"></div>
+</div>
+
+<div class="container">
+<h2>Police Login</h2>
+<input id="policeUser" placeholder="Police Username">
+<input id="policePass" type="password" placeholder="Password">
+<button onclick="policeLogin()">Login</button>
+<p id="policeMsg"></p>
+</div>
+
+<div class="container">
+<h2>Traffic Rules</h2>
+<ul>
+<li>Wear a helmet while riding a two-wheeler.</li>
+<li>Wear a seat belt while driving.</li>
+<li>Follow traffic signals.</li>
+<li>Do not use mobile phones while driving.</li>
+<li>Do not drive above the speed limit.</li>
+</ul>
+</div>
+
+<div class="container">
+<h2>Create FIR / Challan</h2>
+<input id="owner" placeholder="Vehicle Owner Name">
+<input id="vehicleNo" placeholder="Vehicle Number">
+<select id="violation">
+<option>Without Helmet</option>
+<option>No Seat Belt</option>
+<option>Signal Violation</option>
+<option>Over Speeding</option>
+<option>Mobile Usage</option>
+</select>
+<input id="fine" type="number" placeholder="Fine Amount">
+<input id="proof" type="file" accept="image/*">
+<button onclick="createCase()">Create Case</button>
+<div id="caseMsg"></div>
+</div>
+
+<div class="container">
+<h2>Admin Dashboard - Daily Report</h2>
+<p>Total Cases: <span id="total">0</span></p>
+<div id="report"></div>
+<button onclick="alert('Daily report generated successfully')">Generate Report</button>
+</div>
+
+<script>
+let cases=[];
+function register(){
+if(!username.value||!email.value||!password.value){
+alert("Enter all details");return;
+}
+regMsg.innerText="Registration successful!";
+}
+
+function policeLogin(){
+if(policeUser.value==="police"&&policePass.value==="1234"){
+policeMsg.innerText="Police Login Successful";
+}else{
+policeMsg.innerText="Invalid Login";
+}
+}
+
+function createCase(){
+if(!owner.value||!vehicleNo.value||!fine.value){
+alert("Enter all case details");return;
+}
+let file=proof.files[0];
+let proofName=file?file.name:"No photo uploaded";
+cases.push({
+owner:owner.value,
+vehicle:vehicleNo.value.toUpperCase(),
+violation:violation.value,
+fine:fine.value,
+proof:proofName
+});
+caseMsg.innerText="FIR/Challan created successfully!";
+displayCases();
+}
+
+function displayCases(){
+report.innerHTML="";
+cases.forEach(c=>{
+report.innerHTML+=`<div class="card">
+Owner: ${c.owner}<br>
+Vehicle: ${c.vehicle}<br>
+Violation: ${c.violation}<br>
+Fine: Rs.${c.fine}<br>
+Proof: ${c.proof}
+</div>`;
+});
+total.innerText=cases.length;
+}
+
+function viewChallan(){
+let v=vehicle.value.toUpperCase();
+let result=cases.filter(c=>c.vehicle===v);
+challanResult.innerHTML="";
+if(result.length===0){
+challanResult.innerText="No challan found";
+}else{
+result.forEach(c=>{
+challanResult.innerHTML+=`<div class="card">
+Violation: ${c.violation}<br>
+Fine: Rs.${c.fine}<br>
+Owner: ${c.owner}
+</div>`;
+});
+}
+}
+</script>
+</body>
+</html>
