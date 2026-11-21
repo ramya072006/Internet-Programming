@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Online Bus Pass</title>
+<style>
+body{font-family:Arial;background:#eef4ff;margin:0}
+header{background:#164e80;color:white;text-align:center;padding:20px}
+.container{background:white;width:85%;margin:20px auto;padding:20px;border-radius:10px}
+input,select,button{padding:10px;margin:7px;border:1px solid #ccc;border-radius:5px}
+button{background:#1673bd;color:white;border:0;cursor:pointer}
+.card{background:#e5f2ff;padding:15px;margin:10px;border-radius:8px}
+</style>
+</head>
+<body>
+<header><h1>Online Bus Pass Management</h1></header>
+
+<div class="container">
+<h2>User Registration</h2>
+<input id="name" placeholder="Candidate Name">
+<input id="address" placeholder="Address">
+<input id="dob" type="date">
+<input id="email" placeholder="Email">
+<input id="school" placeholder="School / Organization">
+<button onclick="register()">Register</button>
+<p id="regMsg"></p>
+</div>
+
+<div class="container">
+<h2>eWallet</h2>
+<p>Wallet Balance: Rs. <span id="balance">0</span></p>
+<input id="money" type="number" placeholder="Enter Amount">
+<button onclick="addMoney()">Add Money</button>
+</div>
+
+<div class="container">
+<h2>Apply for Bus Pass</h2>
+<select id="passType">
+<option>Student Pass</option>
+<option>Route Pass</option>
+<option>General Pass</option>
+</select>
+<input id="from" placeholder="From">
+<input id="to" placeholder="To">
+<select id="duration">
+<option value="100">Monthly - Rs.100</option>
+<option value="250">Quarterly - Rs.250</option>
+</select>
+<button onclick="applyPass()">Apply Pass</button>
+<div id="passResult"></div>
+</div>
+
+<div class="container">
+<h2>Buy Bus eTicket</h2>
+<input id="ticketFrom" placeholder="From">
+<input id="ticketTo" placeholder="To">
+<input id="ticketPrice" type="number" placeholder="Ticket Price">
+<button onclick="buyTicket()">Buy Ticket</button>
+<p id="ticketMsg"></p>
+</div>
+
+<div class="container">
+<h2>Conductor Dashboard</h2>
+<input id="qr" placeholder="Enter Pass ID">
+<button onclick="verifyPass()">Verify Pass</button>
+<p id="verifyMsg"></p>
+<input id="busLocation" placeholder="Current Bus Location">
+<button onclick="updateLocation()">Update Location</button>
+<p id="locationMsg"></p>
+</div>
+
+<div class="container">
+<h2>Admin Dashboard</h2>
+<input id="busNumber" placeholder="Bus Number">
+<input id="routeName" placeholder="Route Information">
+<button onclick="createBus()">Create Bus</button>
+<div id="busList"></div>
+<h3>Pending Pass Approvals</h3>
+<div id="adminPasses"></div>
+</div>
+
+<script>
+let balance=0;
+let passes=[];
+let buses=[];
+let tickets=[];
+
+function register(){
+if(!name.value||!email.value||!school.value){
+alert("Fill registration details");return;
+}
+regMsg.innerText="Registration successful!";
+}
+
+function addMoney(){
+let amount=Number(money.value);
+if(amount<=0){alert("Enter valid amount");return;}
+balance+=amount;
+document.getElementById("balance").innerText=balance;
+money.value="";
+}
+
+function applyPass(){
+if(!name.value||!from.value||!to.value){
+alert("Enter user and route details");return;
+}
+let p={
+id:"PASS"+(passes.length+1),
+name:name.value,
+type:passType.value,
+from:from.value,
+to:to.value,
+fee:Number(duration.value),
+approved:false
+};
+passes.push(p);
+passResult.innerHTML="Pass Application ID: "+p.id+
+"<br>Status: Pending Approval";
+displayPasses();
+}
+
+function displayPasses(){
+adminPasses.innerHTML="";
+passes.forEach((p,i)=>{
+adminPasses.innerHTML+=`<div class="card">
+${p.id} - ${p.name} - Rs.${p.fee}
+<p>Status: ${p.approved?"Approved":"Pending"}</p>
+<button onclick="approvePass(${i})">Approve</button>
+</div>`;
+});
+}
+
+function approvePass(i){
+passes[i].approved=true;
+displayPasses();
+alert("Pass approved");
+}
+
+function verifyPass(){
+let p=passes.find(x=>x.id===qr.value&&x.approved);
+verifyMsg.innerText=p?"Valid Bus Pass: "+p.name:"Invalid or Pending Pass";
+}
+
+function buyTicket(){
+let price=Number(ticketPrice.value);
+if(!ticketFrom.value||!ticketTo.value||price<=0){
+alert("Enter valid ticket details");return;
+}
+if(balance<price){alert("Insufficient wallet balance");return;}
+balance-=price;
+document.getElementById("balance").innerText=balance;
+tickets.push({from:ticketFrom.value,to:ticketTo.value});
+ticketMsg.innerText="Ticket purchased successfully!";
+}
+
+function updateLocation(){
+locationMsg.innerText="Bus location updated: "+busLocation.value;
+}
+
+function createBus(){
+if(!busNumber.value||!routeName.value){
+alert("Enter bus details");return;
+}
+buses.push(busNumber.value+" - "+routeName.value);
+busList.innerHTML=buses.map(b=>"<p>"+b+"</p>").join("");
+}
+</script>
+</body>
+</html>
