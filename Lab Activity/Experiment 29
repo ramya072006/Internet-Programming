@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Event Management</title>
+<style>
+body{font-family:Arial;margin:0;background:#f4f1fa}
+header{background:#39265b;color:white;text-align:center;padding:30px}
+nav{background:#24163d;padding:15px;text-align:center}
+nav a{color:white;text-decoration:none;margin:15px}
+.container{background:white;padding:22px;margin:20px auto;width:85%;border-radius:10px}
+.speakers{display:flex;flex-wrap:wrap;gap:20px;justify-content:center}
+.card{background:#eee8f7;padding:18px;width:220px;text-align:center;border-radius:10px}
+.card img{width:100%;height:150px;object-fit:cover;border-radius:8px}
+input,select,button{padding:11px;margin:8px;border:1px solid #ccc;border-radius:5px}
+button{background:#673ab7;color:white;border:0;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+<h1>Tech Innovation Summit 2026</h1>
+<p>Learn | Connect | Innovate</p>
+<h3>December 15, 2026 | Chennai</h3>
+</header>
+
+<nav>
+<a href="#about">About Event</a>
+<a href="#speakers">Speakers</a>
+<a href="#schedule">Schedule</a>
+<a href="#register">Register</a>
+</nav>
+
+<div class="container" id="about">
+<h2>About the Event</h2>
+<p>The Tech Innovation Summit is designed for students, developers and technology professionals. It provides a platform to learn about modern technologies, exchange ideas and connect with industry experts.</p>
+<h3>Venue: Chennai Convention Centre</h3>
+</div>
+
+<div class="container" id="speakers">
+<h2>Our Speakers</h2>
+<div class="speakers">
+<div class="card">
+<img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300">
+<h3>John David</h3>
+<p>AI Expert</p>
+</div>
+<div class="card">
+<img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300">
+<h3>Sarah Wilson</h3>
+<p>Software Engineer</p>
+</div>
+<div class="card">
+<img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=300">
+<h3>Michael Roy</h3>
+<p>Technology Consultant</p>
+</div>
+</div>
+</div>
+
+<div class="container" id="schedule">
+<h2>Event Schedule</h2>
+<table border="1" width="100%" cellpadding="12">
+<tr><th>Time</th><th>Event</th></tr>
+<tr><td>9:00 AM</td><td>Registration</td></tr>
+<tr><td>10:00 AM</td><td>Opening Ceremony</td></tr>
+<tr><td>11:00 AM</td><td>AI Technology Session</td></tr>
+<tr><td>1:00 PM</td><td>Lunch Break</td></tr>
+<tr><td>2:00 PM</td><td>Web Development Workshop</td></tr>
+<tr><td>4:00 PM</td><td>Closing Ceremony</td></tr>
+</table>
+</div>
+
+<div class="container" id="register">
+<h2>Event Registration</h2>
+<input id="name" placeholder="Full Name">
+<input id="email" type="email" placeholder="Email Address">
+<input id="phone" placeholder="Phone Number">
+<select id="category">
+<option>Student</option>
+<option>Developer</option>
+<option>Professional</option>
+</select>
+<button onclick="register()">Register Now</button>
+<p id="result"></p>
+</div>
+
+<div class="container">
+<h2>Registration Details</h2>
+<p>Total Registered Participants: <span id="count">0</span></p>
+<div id="participants"></div>
+</div>
+
+<script>
+let registrations=[];
+
+function register(){
+if(!name.value||!email.value||!phone.value){
+alert("Please fill all fields");
+return;
+}
+
+let person={
+name:name.value,
+email:email.value,
+phone:phone.value,
+category:category.value
+};
+
+registrations.push(person);
+
+result.innerText="Registration Successful!";
+count.innerText=registrations.length;
+
+participants.innerHTML="";
+registrations.forEach(p=>{
+participants.innerHTML+=`<p>${p.name} - ${p.category} - ${p.email}</p>`;
+});
+
+name.value="";
+email.value="";
+phone.value="";
+}
+</script>
+</body>
+</html>
