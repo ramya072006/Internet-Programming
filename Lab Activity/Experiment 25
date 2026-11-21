@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Roadside Assistance</title>
+<style>
+body{font-family:Arial;background:#f1f5f9;margin:0}
+header{background:#1e3a5f;color:white;padding:22px;text-align:center}
+.container{background:white;width:85%;margin:20px auto;padding:20px;border-radius:10px}
+input,select,textarea,button{padding:10px;margin:7px;border:1px solid #ccc;border-radius:5px}
+button{background:#2563eb;color:white;border:0;cursor:pointer}
+.card{padding:15px;background:#e8f0ff;margin:10px;border-radius:8px}
+</style>
+</head>
+<body>
+<header><h1>On Road Vehicle Breakdown Assistance</h1>
+<p>Find Mechanics Near You</p></header>
+
+<div class="container">
+<h2>User Registration</h2>
+<input id="username" placeholder="Full Name">
+<input id="useremail" placeholder="Email">
+<input id="userpassword" type="password" placeholder="Password">
+<button onclick="register()">Register</button>
+<p id="registerMsg"></p>
+</div>
+
+<div class="container">
+<h2>Search Mechanics</h2>
+<input id="searchLocation" placeholder="Enter Location">
+<select id="service">
+<option>Car Repair</option>
+<option>Bike Repair</option>
+<option>Tyre Repair</option>
+<option>Battery Service</option>
+</select>
+<button onclick="searchMechanics()">Search</button>
+<div id="mechanicResults"></div>
+</div>
+
+<div class="container">
+<h2>Mechanic Registration</h2>
+<input id="mechanicName" placeholder="Mechanic Name">
+<input id="businessName" placeholder="Business Name">
+<input id="mechanicLocation" placeholder="Location">
+<input id="mechanicPhone" placeholder="Contact Number">
+<select id="mechanicService">
+<option>Car Repair</option>
+<option>Bike Repair</option>
+<option>Tyre Repair</option>
+<option>Battery Service</option>
+</select>
+<button onclick="addMechanic()">Register Business</button>
+<p id="mechanicMsg"></p>
+</div>
+
+<div class="container">
+<h2>Google Location</h2>
+<button onclick="getLocation()">Get My Location</button>
+<p id="locationMsg"></p>
+</div>
+
+<div class="container">
+<h2>Customer Feedback</h2>
+<input id="feedbackName" placeholder="Your Name">
+<textarea id="feedback" placeholder="Write Feedback"></textarea>
+<button onclick="addFeedback()">Submit Feedback</button>
+<div id="feedbackList"></div>
+</div>
+
+<div class="container">
+<h2>Admin Approval</h2>
+<div id="approvalList"></div>
+</div>
+
+<script>
+let mechanics=[];
+let feedbacks=[];
+let registered=false;
+
+function register(){
+if(!username.value||!useremail.value||!userpassword.value){
+alert("Fill all details");return;
+}
+registered=true;
+registerMsg.innerText="Registration successful!";
+}
+
+function addMechanic(){
+if(!mechanicName.value||!businessName.value||!mechanicLocation.value){
+alert("Enter mechanic details");return;
+}
+mechanics.push({
+name:mechanicName.value,
+business:businessName.value,
+location:mechanicLocation.value,
+phone:mechanicPhone.value,
+service:mechanicService.value,
+approved:false
+});
+mechanicMsg.innerText="Registration submitted for admin approval";
+displayApprovals();
+}
+
+function searchMechanics(){
+let loc=searchLocation.value.toLowerCase();
+let result=mechanics.filter(m=>
+m.approved&&m.location.toLowerCase().includes(loc)&&m.service===service.value);
+mechanicResults.innerHTML="";
+if(result.length===0){
+mechanicResults.innerHTML="No approved mechanics found.";
+}
+result.forEach(m=>{
+mechanicResults.innerHTML+=`<div class="card">
+<h3>${m.name}</h3>
+<p>${m.business}</p>
+<p>${m.location}</p>
+<p>${m.service}</p>
+<p>Contact: ${m.phone}</p>
+</div>`;
+});
+}
+
+function displayApprovals(){
+approvalList.innerHTML="";
+mechanics.forEach((m,i)=>{
+approvalList.innerHTML+=`<div class="card">
+${m.business} - ${m.location}
+<p>Status: ${m.approved?"Approved":"Pending"}</p>
+<button onclick="approve(${i})">Approve</button>
+</div>`;
+});
+}
+
+function approve(i){
+mechanics[i].approved=true;
+displayApprovals();
+}
+
+function getLocation(){
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(pos=>{
+locationMsg.innerHTML="Latitude: "+pos.coords.latitude+
+"<br>Longitude: "+pos.coords.longitude+
+'<br><a target="_blank" href="https://www.google.com/maps?q='+
+pos.coords.latitude+','+pos.coords.longitude+'">View on Google Maps</a>';
+},()=>locationMsg.innerText="Unable to get location. Allow location access.");
+}else{
+locationMsg.innerText="Geolocation not supported";
+}
+}
+
+function addFeedback(){
+if(!feedbackName.value||!feedback.value){
+alert("Enter feedback");return;
+}
+feedbacks.push(feedbackName.value+": "+feedback.value);
+feedbackList.innerHTML=feedbacks.map(f=>"<p>"+f+"</p>").join("");
+}
+</script>
+</body>
+</html>
