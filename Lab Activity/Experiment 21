@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Online Job Portal</title>
+<style>
+body{font-family:Arial;background:#eef2f7;margin:0}
+header{background:#243b67;color:white;padding:20px;text-align:center}
+nav{text-align:center;background:#172b4d;padding:12px}
+nav a{color:white;margin:15px;text-decoration:none}
+.container{width:85%;margin:25px auto;background:white;padding:20px;border-radius:10px}
+input,select,button,textarea{padding:10px;margin:7px;border:1px solid #ccc;border-radius:5px}
+button{background:#2459a6;color:white;cursor:pointer;border:0}
+.job{border:1px solid #ddd;padding:15px;margin:12px;border-radius:8px}
+</style>
+</head>
+<body>
+<header><h1>Online Job Portal</h1><p>Find Your Dream Job</p></header>
+<nav>
+<a href="#jobs">Jobs</a><a href="#register">Register</a>
+<a href="#admin">Admin</a><a href="#director">Director</a>
+</nav>
+
+<div class="container" id="register">
+<h2>User Registration</h2>
+<input id="name" placeholder="Full Name">
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="register()">Register</button>
+<p id="regmsg"></p>
+</div>
+
+<div class="container" id="jobs">
+<h2>Search Vacancies</h2>
+<input id="search" placeholder="Search job title" oninput="filterJobs()">
+<select id="location" onchange="filterJobs()">
+<option value="">All Locations</option>
+<option>Chennai</option><option>Bangalore</option><option>Hyderabad</option>
+</select>
+<select id="category" onchange="filterJobs()">
+<option value="">All Categories</option>
+<option>IT</option><option>Marketing</option><option>Finance</option>
+</select>
+<div id="joblist"></div>
+</div>
+
+<div class="container" id="director">
+<h2>Director - Post Vacancy</h2>
+<input id="jobtitle" placeholder="Job Title">
+<input id="company" placeholder="Company Name">
+<input id="joblocation" placeholder="Location">
+<select id="jobcategory">
+<option>IT</option><option>Marketing</option><option>Finance</option>
+</select>
+<textarea id="description" placeholder="Job Description"></textarea>
+<button onclick="postJob()">Post Vacancy</button>
+</div>
+
+<div class="container">
+<h2>Applied Candidates</h2>
+<div id="applications">No applications yet.</div>
+</div>
+
+<div class="container" id="admin">
+<h2>Admin Dashboard</h2>
+<p>Total Registered Users: <span id="users">0</span></p>
+<p>Total Vacancies: <span id="totaljobs">0</span></p>
+<button onclick="alert('Director approval completed')">Approve Director</button>
+<button onclick="alert('Report generated')">View Report</button>
+</div>
+
+<script>
+let jobs=[
+{title:"Web Developer",company:"ABC Technologies",location:"Chennai",category:"IT",description:"HTML, CSS and JavaScript"},
+{title:"Marketing Executive",company:"XYZ Ltd",location:"Bangalore",category:"Marketing",description:"Marketing and communication"}
+];
+let applications=[];
+let userCount=0;
+
+function register(){
+if(!name.value||!email.value||!password.value){
+alert("Please fill all fields");return;
+}
+userCount++;
+users.innerText=userCount;
+regmsg.innerText="Registration successful!";
+}
+
+function displayJobs(list=jobs){
+joblist.innerHTML="";
+list.forEach((j,i)=>{
+joblist.innerHTML+=`
+<div class="job">
+<h3>${j.title}</h3>
+<p>Company: ${j.company}</p>
+<p>Location: ${j.location}</p>
+<p>Category: ${j.category}</p>
+<p>${j.description}</p>
+<button onclick="applyJob(${jobs.indexOf(j)})">Apply Now</button>
+</div>`;
+});
+totaljobs.innerText=jobs.length;
+}
+
+function filterJobs(){
+let s=search.value.toLowerCase();
+let l=location.value;
+let c=category.value;
+let result=jobs.filter(j=>
+j.title.toLowerCase().includes(s)&&
+(!l||j.location===l)&&(!c||j.category===c));
+displayJobs(result);
+}
+
+function postJob(){
+if(!jobtitle.value||!company.value||!joblocation.value){
+alert("Enter all job details");return;
+}
+jobs.push({
+title:jobtitle.value,
+company:company.value,
+location:joblocation.value,
+category:jobcategory.value,
+description:description.value
+});
+displayJobs();
+alert("Vacancy posted successfully");
+}
+
+function applyJob(i){
+let applicant=prompt("Enter your name:");
+if(applicant){
+applications.push(applicant+" applied for "+jobs[i].title);
+applications.innerHTML=applications.map(a=>"<p>"+a+"</p>").join("");
+alert("Application submitted successfully");
+}
+}
+
+displayJobs();
+</script>
+</body>
+</html>
