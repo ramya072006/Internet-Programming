@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>BookHaven</title>
+<style>
+body{font-family:Arial;margin:0;background:#f5f2ed}
+header{background:#563b2e;color:white;padding:22px;text-align:center}
+.container{padding:25px;max-width:950px;margin:auto}
+.books{display:flex;flex-wrap:wrap;gap:20px}
+.book{background:white;padding:18px;width:220px;text-align:center;border-radius:10px;box-shadow:0 2px 7px #bbb}
+.book img{width:100%;height:150px;object-fit:cover}
+button{background:#754b36;color:white;padding:10px;border:0;border-radius:5px;cursor:pointer}
+input{padding:10px;width:80%;margin:15px 0}
+#cart{background:white;padding:15px;margin-top:20px;border-radius:8px}
+</style>
+</head>
+<body>
+<header><h1>BookHaven</h1><p>Your Online Bookstore</p></header>
+<div class="container">
+<input type="text" id="search" placeholder="Search books..." onkeyup="searchBooks()">
+<h2>Available Books</h2>
+<div class="books" id="bookList">
+<div class="book" data-name="web development">
+<img src="https://placehold.co/250x150?text=Web+Development">
+<h3>Web Development</h3><p>₹450</p>
+<button onclick="addToCart('Web Development',450)">Add to Cart</button>
+</div>
+<div class="book" data-name="java programming">
+<img src="https://placehold.co/250x150?text=Java">
+<h3>Java Programming</h3><p>₹550</p>
+<button onclick="addToCart('Java Programming',550)">Add to Cart</button>
+</div>
+<div class="book" data-name="python basics">
+<img src="https://placehold.co/250x150?text=Python">
+<h3>Python Basics</h3><p>₹400</p>
+<button onclick="addToCart('Python Basics',400)">Add to Cart</button>
+</div>
+</div>
+<div id="cart">
+<h2>Shopping Cart</h2>
+<ul id="cartItems"></ul>
+<h3 id="total">Total: ₹0</h3>
+<button onclick="checkout()">Checkout</button>
+</div>
+</div>
+<script>
+let total=0;
+function addToCart(name,price){
+let li=document.createElement("li");
+li.textContent=name+" - ₹"+price;
+document.getElementById("cartItems").appendChild(li);
+total+=price;
+document.getElementById("total").innerHTML="Total: ₹"+total;
+}
+function searchBooks(){
+let value=document.getElementById("search").value.toLowerCase();
+document.querySelectorAll(".book").forEach(book=>{
+book.style.display=book.dataset.name.includes(value)?"block":"none";
+});
+}
+function checkout(){
+if(total===0){alert("Your cart is empty");return;}
+alert("Order placed successfully! Total: ₹"+total);
+document.getElementById("cartItems").innerHTML="";
+total=0;
+document.getElementById("total").innerHTML="Total: ₹0";
+}
+</script>
+</body>
+</html>
