@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ram Infotech</title>
+<style>
+body{font-family:Arial;background:#edf2f7;margin:0}
+header{background:#172554;color:white;text-align:center;padding:25px}
+nav{background:#1e3a8a;text-align:center;padding:15px}
+nav a{color:white;text-decoration:none;margin:15px}
+.container{background:white;width:85%;margin:20px auto;padding:20px;border-radius:10px}
+input,select,textarea,button{padding:10px;margin:7px;border:1px solid #ccc;border-radius:5px}
+button{background:#2563eb;color:white;border:0;cursor:pointer}
+.card{background:#eaf0ff;padding:15px;margin:10px;border-radius:8px}
+</style>
+</head>
+<body>
+<header><h1>RAM INFOTECH</h1><p>Laptop Sales and Service Center</p></header>
+<nav>
+<a href="#home">Home</a><a href="#sales">Sales</a>
+<a href="#service">Services</a><a href="#admin">Admin</a>
+</nav>
+
+<div class="container" id="home">
+<h2>Welcome to Ram Infotech</h2>
+<p>Buy laptops and get professional laptop repair services.</p>
+</div>
+
+<div class="container" id="sales">
+<h2>Available Laptops</h2>
+<div class="card"><h3>HP Laptop</h3><p>Core i5, 8GB RAM, 512GB SSD</p><p>Rs.55,000</p>
+<button onclick="buy('HP Laptop',55000)">Buy Now</button></div>
+<div class="card"><h3>Dell Laptop</h3><p>Core i7, 16GB RAM, 1TB SSD</p><p>Rs.75,000</p>
+<button onclick="buy('Dell Laptop',75000)">Buy Now</button></div>
+<div class="card"><h3>Lenovo Laptop</h3><p>Core i5, 16GB RAM, 512GB SSD</p><p>Rs.60,000</p>
+<button onclick="buy('Lenovo Laptop',60000)">Buy Now</button></div>
+</div>
+
+<div class="container">
+<h2>Customer Purchase</h2>
+<input id="customer" placeholder="Customer Name">
+<input id="phone" placeholder="Phone Number">
+<div id="purchaseMsg"></div>
+</div>
+
+<div class="container" id="service">
+<h2>Book Laptop Service</h2>
+<input id="serviceName" placeholder="Customer Name">
+<input id="laptopModel" placeholder="Laptop Model">
+<select id="serviceType">
+<option>Screen Repair</option>
+<option>Keyboard Repair</option>
+<option>Battery Replacement</option>
+<option>Software Installation</option>
+<option>General Service</option>
+</select>
+<input id="serviceDate" type="date">
+<button onclick="bookService()">Book Service</button>
+<p id="serviceMsg"></p>
+</div>
+
+<div class="container">
+<h2>Service Status</h2>
+<input id="trackId" placeholder="Enter Service ID">
+<button onclick="trackService()">Track Service</button>
+<p id="trackMsg"></p>
+</div>
+
+<div class="container">
+<h2>Laptop Rental Agreement</h2>
+<input id="renter" placeholder="Customer Name">
+<select id="rentalLaptop">
+<option>HP Laptop</option><option>Dell Laptop</option><option>Lenovo Laptop</option>
+</select>
+<input id="days" type="number" placeholder="Number of Days">
+<button onclick="rentLaptop()">Create Rental Agreement</button>
+<p id="rentalMsg"></p>
+</div>
+
+<div class="container" id="admin">
+<h2>Admin Login</h2>
+<input id="adminUser" placeholder="Username">
+<input id="adminPass" type="password" placeholder="Password">
+<button onclick="adminLogin()">Login</button>
+<p id="adminMsg"></p>
+<h2>Stock Maintenance</h2>
+<input id="stockModel" placeholder="Laptop Model">
+<input id="stockQty" type="number" placeholder="Quantity">
+<button onclick="addStock()">Add Stock</button>
+<div id="stockList"></div>
+<h2>Customer Service Records</h2>
+<div id="records"></div>
+</div>
+
+<script>
+let purchases=[];
+let services=[];
+let rentals=[];
+let stocks=[];
+
+function buy(product,price){
+if(!customer.value||!phone.value){alert("Enter customer name and phone");return;}
+purchases.push({product:product,price:price,customer:customer.value});
+purchaseMsg.innerText=product+" purchased for Rs."+price;
+}
+function bookService(){
+if(!serviceName.value||!laptopModel.value||!serviceDate.value){
+alert("Enter all details");return;
+}
+let id="SRV"+(services.length+1);
+services.push({id:id,name:serviceName.value,model:laptopModel.value,type:serviceType.value,date:serviceDate.value,status:"Pending"});
+serviceMsg.innerText="Service booked successfully! ID: "+id;
+displayRecords();
+}
+function trackService(){
+let s=services.find(x=>x.id===trackId.value);
+trackMsg.innerText=s?"Status: "+s.status:"Service ID not found";
+}
+function rentLaptop(){
+let d=Number(days.value);
+if(!renter.value||d<=0){alert("Enter rental details");return;}
+let amount=d*500;
+rentals.push(renter.value+" - "+rentalLaptop.value+" - "+d+" days");
+rentalMsg.innerText="Rental Agreement Created. Total: Rs."+amount;
+}
+function adminLogin(){
+adminMsg.innerText=adminUser.value==="admin"&&adminPass.value==="1234"?"Admin Login Successful":"Invalid Login";
+}
+function addStock(){
+if(!stockModel.value||Number(stockQty.value)<=0){alert("Enter valid stock details");return;}
+stocks.push(stockModel.value+" - "+stockQty.value);
+stockList.innerHTML=stocks.map(s=>"<p>"+s+"</p>").join("");
+}
+function displayRecords(){
+records.innerHTML="";
+services.forEach(s=>{
+records.innerHTML+=`<div class="card">${s.id} - ${s.name} - ${s.type} - ${s.status}
+<button onclick="completeService('${s.id}')">Mark Completed</button></div>`;
+});
+}
+function completeService(id){
+let s=services.find(x=>x.id===id);
+s.status="Completed";
+displayRecords();
+}
+</script>
+</body>
+</html>
