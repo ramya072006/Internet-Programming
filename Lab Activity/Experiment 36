@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>EduConnect</title>
+<style>
+body{font-family:Arial;margin:0;background:#f2f5ff;color:#222}
+header{background:#263c8c;color:white;padding:20px;text-align:center}
+nav{background:#17265e;padding:12px;text-align:center}
+nav a{color:white;margin:15px;text-decoration:none}
+.container{max-width:850px;margin:25px auto;padding:20px}
+.card{background:white;padding:20px;margin:15px 0;border-radius:10px;box-shadow:0 2px 8px #ccc}
+input,select,button{padding:12px;margin:7px 0;width:100%;box-sizing:border-box}
+button{background:#263c8c;color:white;border:0;cursor:pointer;border-radius:5px}
+button:hover{background:#17265e}
+#result{color:green;font-weight:bold}
+</style>
+</head>
+<body>
+<header><h1>EduConnect</h1><p>Online Teaching and Learning Platform</p></header>
+<nav><a href="#student">Student</a><a href="#teacher">Teacher</a><a href="#subjects">Subjects</a></nav>
+<div class="container">
+<div class="card" id="student">
+<h2>Student Registration</h2>
+<input id="sname" placeholder="Student Name">
+<input id="semail" type="email" placeholder="Email">
+<select id="course">
+<option value="">Select Course</option>
+<option>Computer Science</option>
+<option>Mathematics</option>
+<option>English</option>
+<option>Science</option>
+</select>
+<button onclick="registerStudent()">Register Student</button>
+</div>
+<div class="card" id="teacher">
+<h2>Teacher Registration</h2>
+<input id="tname" placeholder="Teacher Name">
+<input id="temail" type="email" placeholder="Email">
+<input id="experience" type="number" placeholder="Years of Experience">
+<button onclick="registerTeacher()">Register Teacher</button>
+</div>
+<div class="card" id="subjects">
+<h2>Subject Registration</h2>
+<input id="studentName" placeholder="Student Name">
+<select id="subject">
+<option value="">Choose Subject</option>
+<option>Java Programming</option>
+<option>Python Programming</option>
+<option>Database Management</option>
+<option>Web Development</option>
+</select>
+<input id="time" type="time">
+<button onclick="registerSubject()">Register Subject</button>
+</div>
+<div class="card">
+<h2>Registration Status</h2>
+<p id="result">No registration yet.</p>
+</div>
+</div>
+<script>
+function registerStudent(){
+let n=document.getElementById("sname").value;
+let e=document.getElementById("semail").value;
+let c=document.getElementById("course").value;
+if(n===""||e===""||c===""){alert("Fill all student details");return;}
+document.getElementById("result").innerHTML="Student "+n+" registered for "+c;
+}
+function registerTeacher(){
+let n=document.getElementById("tname").value;
+let e=document.getElementById("temail").value;
+let x=document.getElementById("experience").value;
+if(n===""||e===""||x===""){alert("Fill all teacher details");return;}
+document.getElementById("result").innerHTML="Teacher "+n+" registered successfully.";
+}
+function registerSubject(){
+let n=document.getElementById("studentName").value;
+let s=document.getElementById("subject").value;
+let t=document.getElementById("time").value;
+if(n===""||s===""||t===""){alert("Fill all subject details");return;}
+document.getElementById("result").innerHTML=n+" registered for "+s+" at "+t;
+}
+</script>
+</body>
+</html>
