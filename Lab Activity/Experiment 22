@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Waste Management</title>
+<style>
+body{font-family:Arial;background:#edf5ef;margin:0}
+header{background:#176b45;color:white;padding:20px;text-align:center}
+.container{background:white;margin:20px auto;padding:20px;width:85%;border-radius:10px}
+input,select,button{padding:10px;margin:7px;border:1px solid #ccc;border-radius:5px}
+button{background:#198754;color:white;border:0;cursor:pointer}
+.card{background:#e5f5e9;padding:12px;margin:10px;border-radius:7px}
+</style>
+</head>
+<body>
+<header><h1>Smart Waste Management System</h1></header>
+
+<div class="container">
+<h2>Admin Login</h2>
+<input id="adminUser" placeholder="Username">
+<input id="adminPass" type="password" placeholder="Password">
+<button onclick="adminLogin()">Login</button>
+<p id="adminMsg"></p>
+</div>
+
+<div class="container">
+<h2>Create Garbage Bin</h2>
+<input id="binId" placeholder="Bin ID">
+<input id="binLocation" placeholder="Location">
+<select id="binStatus">
+<option>Empty</option><option>Half Full</option><option>Full</option>
+</select>
+<button onclick="addBin()">Add Bin</button>
+<div id="binList"></div>
+</div>
+
+<div class="container">
+<h2>Public Complaint</h2>
+<input id="person" placeholder="Your Name">
+<input id="complaint" placeholder="Complaint Details">
+<button onclick="addComplaint()">Submit Complaint</button>
+<div id="complaintList"></div>
+</div>
+
+<div class="container">
+<h2>Driver Dashboard</h2>
+<input id="driverName" placeholder="Driver Name">
+<select id="route">
+<option>Route 1 - Main Road</option>
+<option>Route 2 - Market Area</option>
+<option>Route 3 - Bus Stand</option>
+</select>
+<button onclick="assignRoute()">Choose Route</button>
+<p id="routeMsg"></p>
+<input id="load" type="number" placeholder="Garbage Load (kg)">
+<button onclick="updateLoad()">Update Load</button>
+<p id="loadMsg"></p>
+</div>
+
+<div class="container">
+<h2>Admin Reports</h2>
+<p>Total Bins: <span id="totalBins">0</span></p>
+<p>Total Complaints: <span id="totalComplaints">0</span></p>
+<button onclick="alert('Waste management report generated!')">Generate Report</button>
+</div>
+
+<script>
+let bins=[];
+let complaints=[];
+
+function adminLogin(){
+if(adminUser.value==="admin"&&adminPass.value==="1234"){
+adminMsg.innerText="Admin Login Successful";
+}else{
+adminMsg.innerText="Invalid Login Details";
+}
+}
+
+function addBin(){
+if(!binId.value||!binLocation.value){
+alert("Enter bin details");return;
+}
+bins.push({id:binId.value,location:binLocation.value,status:binStatus.value});
+displayBins();
+}
+
+function displayBins(){
+binList.innerHTML="";
+bins.forEach((b,i)=>{
+binList.innerHTML+=`<div class="card">
+Bin ID: ${b.id}<br>Location: ${b.location}<br>Status: ${b.status}
+<button onclick="deleteBin(${i})">Delete</button>
+</div>`;
+});
+totalBins.innerText=bins.length;
+}
+
+function deleteBin(i){
+bins.splice(i,1);
+displayBins();
+}
+
+function addComplaint(){
+if(!person.value||!complaint.value){
+alert("Enter complaint details");return;
+}
+complaints.push({name:person.value,details:complaint.value,status:"Pending"});
+displayComplaints();
+}
+
+function displayComplaints(){
+complaintList.innerHTML="";
+complaints.forEach(c=>{
+complaintList.innerHTML+=`<div class="card">
+${c.name}: ${c.details}<br>Status: ${c.status}
+</div>`;
+});
+totalComplaints.innerText=complaints.length;
+}
+
+function assignRoute(){
+if(!driverName.value){alert("Enter driver name");return;}
+routeMsg.innerText=driverName.value+" assigned to "+route.value;
+}
+
+function updateLoad(){
+loadMsg.innerText="Garbage load updated: "+load.value+" kg";
+}
+</script>
+</body>
+</html>
